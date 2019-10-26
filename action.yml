@@ -1,0 +1,15 @@
+# action.yml
+name: "codacy-analysis-cli"
+description: "Command line interface to execute Codacy code analysis locally"
+inputs:
+  project-token:
+    required: true
+runs:
+  using: "docker"
+  image: "docker://codacy/codacy-analysis-cli:stable"
+  args:
+    - "analyse"
+    - "--directory"
+    - "`pwd`"
+    - "--project-token"
+    - "${{ inputs.project-token }}"
