@@ -2,7 +2,7 @@
 
 > 🤖 Automate Codacy static analysis
 
-This action run the [codacy-analysis-cli](https://github.com/codacy/codacy-analysis-cli) for all commits and pull requests with your Codacy configuration.
+This action runs the [codacy-analysis-cli](https://github.com/codacy/codacy-analysis-cli) for all commits and pull requests with your Codacy configuration.
 
 ## Usage
 
@@ -13,7 +13,7 @@ Create a new workflow `.yml` file in the `.github/workflows/` directory.
 ```yml
 name: codacy-analysis-cli
 
-on: ["push", "pull_request"]
+on: ["push"]
 
 jobs:
   codacy-analysis-cli:
@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Run codacy-analysis-cli
-        uses: mrfyda/codacy-analysis-cli-action@action
+        uses: mrfyda/codacy-analysis-cli-action@master
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 ```
@@ -31,6 +31,7 @@ jobs:
 
 Change these options in the workflow `.yml` file to meet your GitHub project needs.
 
-| Setting         | Description           | Values                                |
-| --------------- | --------------------- | ------------------------------------- |
-| `project-token` | The project API token | `${{ secrets.CODACY_PROJECT_TOKEN }}` |
+| Setting         | Description                         | Default value                         |
+| --------------- | ----------------------------------- | ------------------------------------- |
+| `directory`     | Choose the directory to be analysed | `/`                                   |
+| `project-token` | The project API token               | `${{ secrets.CODACY_PROJECT_TOKEN }}` |

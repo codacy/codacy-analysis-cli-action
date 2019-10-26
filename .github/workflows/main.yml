@@ -1,6 +1,6 @@
 name: codacy-analysis-cli
 
-on: ["push", "pull_request"]
+on: ["push"]
 
 jobs:
   codacy-analysis-cli:
@@ -9,6 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Run codacy-analysis-cli
-        uses: mrfyda/codacy-analysis-cli-action@action
+        uses: mrfyda/codacy-analysis-cli-action@master
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
