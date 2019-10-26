@@ -1,0 +1,13 @@
+name: codacy-analysis-cli
+
+on: [push]
+
+jobs:
+  codacy-analysis-cli:
+    runs-on: ubuntu-latest
+    name: codacy-analysis-cli
+    steps:
+      - name: Hello world action step
+        uses: mrfyda/codacy-analysis-cli-action@action
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
