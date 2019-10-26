@@ -1,13 +1,14 @@
 name: codacy-analysis-cli
 
-on: [push]
+on: ["push", "pull_request"]
 
 jobs:
   codacy-analysis-cli:
     runs-on: ubuntu-latest
     name: codacy-analysis-cli
     steps:
-      - name: Hello world action step
+      - uses: actions/checkout@master
+      - name: Run codacy-analysis-cli
         uses: mrfyda/codacy-analysis-cli-action@action
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
