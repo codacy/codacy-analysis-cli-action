@@ -2,6 +2,9 @@
 name: "codacy-analysis-cli"
 description: "Command line interface to execute Codacy code analysis locally"
 inputs:
+  directory:
+    required: false
+    default: "`pwd`"
   project-token:
     required: true
 runs:
@@ -10,6 +13,6 @@ runs:
   args:
     - "analyse"
     - "--directory"
-    - "`pwd`"
+    - ${{ inputs.directory }}"
     - "--project-token"
     - "${{ inputs.project-token }}"
