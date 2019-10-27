@@ -1,6 +1,9 @@
 # action.yml
 name: "codacy-analysis-cli"
 description: "Command line interface to execute Codacy code analysis locally"
+branding:
+  icon: 'check'
+  color: 'gray-dark'
 inputs:
   directory:
     required: false
