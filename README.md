@@ -4,8 +4,8 @@ This is a GitHub Action for invoking the [Codacy Analysis CLI](https://github.co
 
 ## GitHub Action
 
-The following is an example of a workflow using the CLI as an action,
-to analyse each commit and pull request.
+The following is an example GitHub Action workflow that uses the Codacy Analysis CLI
+to analyze each commit and pull request.
 
 ```yaml
 name: codacy-analysis-cli
@@ -25,27 +25,25 @@ jobs:
 
 Running the action with the default configurations will:
 
-- Analyse the current commit or pull request running all supported tools, with the default configuration,
+- Analyze the current commit or pull request by running all supported static code analysis tools, with their default configurations,
   for the languages you are using.
-- Print analysis results into the console (you can check them in GitHub's action workflow panel).
+- Print analysis results on the console, visible on the GitHub Action's workflow panel.
 - Fail the workflow if at least one issue is found in your code.
 
-Check the next section to see how you can further configure this action.
+Read the next section to learn how you can further configure this action.
 
 ### Caveats
 
-This action supports all [CLI configuration options](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration) with the following exceptions:
+This action supports all [Codacy Analysis CLI configuration options](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration), with the following exceptions:
 
-- `--commit-uuid` -- **Not supported**. The action will only analyse the commit that triggered it.
-- `--api-token` -- **Not supported**. Use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead.
-- `--username` -- **Not supported**. Use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead.
-- `--project` -- **Not supported**. Use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead.
+- `--commit-uuid` -- **Not supported**. The action will always analyze the commit that triggered it.
+- `--api-token`, `--username`, and `--project` -- **Not supported**. Use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead.
 
 The command `validate-configuration` is also **not supported**.
 
-When using `--project-token` make sure to use [GitHub security features](https://docs.github.com/en/actions/reference/encrypted-secrets)
-to prevent you from committing a secret token to your code. For example, if you store your Codacy project
-token in GitHub, this is how you would use it in the action workflow.
+When using `--project-token` make sure that you use [GitHub security features](https://docs.github.com/en/actions/reference/encrypted-secrets)
+to avoid committing the secret token to your repository. For example, if you store your Codacy project
+token in GitHub, this is how you would use it in the action workflow:
 
 ```yaml
 # ...
@@ -58,10 +56,9 @@ with:
 ## Contributing
 
 We love contributions, feedback, and bug reports.
-For issues with the invocation of this action,
-file [issues](https://github.com/codacy/codacy-analysis-cli-action/issues) in this repository.
+If you run into issues while running this action,
+[open an issue](https://github.com/codacy/codacy-analysis-cli-action/issues) in this repository.
 
-
-## More Information
+## More information
 
 For documentation on Codacy itself, including policy language and capabilities see the [Codacy Documentation](https://docs.codacy.com)
