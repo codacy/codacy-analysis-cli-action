@@ -11,10 +11,10 @@ inputs:
     description: "Run with verbose output"
   project-token:
     required: false
-    description: "A token to fetch your remote Codacy configuration for the project being analyzed"
+    description: "API token to retrieve your remote Codacy configuration for the project being analyzed"
   codacy-api-base-url:
     required: false
-    description: "Codacy's API URL, to retrieve the configuration."
+    description: "Codacy's API URL, to retrieve your remote Codacy configuration"
   format:
     required: false
     description: "Format of the output file"
