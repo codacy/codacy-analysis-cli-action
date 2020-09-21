@@ -60,7 +60,7 @@ analysis_file() {
       *)
         if [ ${is_filename} -eq 1 ]; then
           if [ -n "$filename" ]; then
-            echo "Please provide only one file or directory to analyse" >&2
+            echo "Please provide only one file or directory to analyze" >&2
             exit 1
           else
             is_filename=0
