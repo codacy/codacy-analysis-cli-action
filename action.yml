@@ -11,10 +11,10 @@ inputs:
     description: "Run with verbose output"
   project-token:
     required: false
-    description: "A token to fetch your remote Codacy configuration for the project being analysed"
+    description: "API token to retrieve your remote Codacy configuration for the project being analyzed"
   codacy-api-base-url:
     required: false
-    description: "Codacy's API URL, to retrieve the configuration."
+    description: "Codacy's API URL, to retrieve your remote Codacy configuration"
   format:
     required: false
     description: "Format of the output file"
@@ -23,7 +23,7 @@ inputs:
     description: "Send analysis results to an output file"
   directory:
     required: false
-    description: "The directory to be analysed"
+    description: "The directory to be analyzed"
   parallel:
     required: false
     description: "Number of tools to run in parallel"
@@ -32,7 +32,7 @@ inputs:
     description: "Maximum number of issues allowed for the analysis to succeed"
   tool:
     required: false
-    description: "The name of the tool to analyse the code"
+    description: "The name of the tool to analyze the code"
   tool-timeout:
     required: false
     description: "Maximum time each tool has to execute"
