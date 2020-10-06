@@ -51,7 +51,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: "Codacy CLI"
+    - name: "Download Codacy CLI script"
+      shell: bash
+      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/3.5.1/bin/codacy-analysis-cli.sh > ${{ github.action_path }}/codacy-analysis-cli.sh
+    - name: "Change Codacy CLI script permissions"
+      shell: bash
+      run: chmod +x ${{ github.action_path }}/codacy-analysis-cli.sh
+    - name: "Run Codacy CLI"
       shell: bash
       run: >-
         ${{ github.action_path }}/codacy-analysis-cli.sh
