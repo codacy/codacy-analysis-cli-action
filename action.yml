@@ -51,16 +51,19 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: "Set script path environment variable"
+      shell: bash
+      run: echo "::set-env name=CLI_SCRIPT_PATH::${{ github.action_path }}/codacy-analysis-cli.sh"
     - name: "Download Codacy CLI script"
       shell: bash
-      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/3.5.1/bin/codacy-analysis-cli.sh > ${{ github.action_path }}/codacy-analysis-cli.sh
+      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/3.6.0/bin/codacy-analysis-cli.sh > ${{ env.CLI_SCRIPT_PATH }}
     - name: "Change Codacy CLI script permissions"
       shell: bash
-      run: chmod +x ${{ github.action_path }}/codacy-analysis-cli.sh
+      run: chmod +x ${{ env.CLI_SCRIPT_PATH }}
     - name: "Run Codacy CLI"
       shell: bash
       run: >-
-        ${{ github.action_path }}/codacy-analysis-cli.sh
+        ${{ env.CLI_SCRIPT_PATH }}
         analyse
         $(if [ ${{ inputs.verbose }} = true ]; then echo "--verbose"; fi)
         $(if [ ${{ inputs.project-token }} ]; then echo "--project-token ${{ inputs.project-token }}"; fi)
