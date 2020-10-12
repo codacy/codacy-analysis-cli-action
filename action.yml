@@ -48,6 +48,11 @@ inputs:
   force-file-permissions:
     required: false
     description: "Force files to be readable by changing the permissions before running the analysis"
+  gh-code-scanning-compat:
+    required: false
+    description: >-
+      Reduce issue severity by one level, for non-security issues, for compatibility with GitHub's code scanning feature.
+      This option will only have an effect when used in conjunction with '--format sarif'.
 runs:
   using: "composite"
   steps:
@@ -56,7 +61,7 @@ runs:
       run: echo "::set-env name=CLI_SCRIPT_PATH::${{ github.action_path }}/codacy-analysis-cli.sh"
     - name: "Download Codacy CLI script"
       shell: bash
-      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/3.6.0/bin/codacy-analysis-cli.sh > ${{ env.CLI_SCRIPT_PATH }}
+      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/4.0.0/bin/codacy-analysis-cli.sh > ${{ env.CLI_SCRIPT_PATH }}
     - name: "Change Codacy CLI script permissions"
       shell: bash
       run: chmod +x ${{ env.CLI_SCRIPT_PATH }}
@@ -79,3 +84,4 @@ runs:
         $(if [ ${{ inputs.fail-if-incomplete }} = true ]; then echo "--fail-if-incomplete"; fi)
         $(if [ ${{ inputs.allow-network }} = true ]; then echo "--allow-network"; fi)
         $(if [ ${{ inputs.force-file-permissions }} = true ]; then echo "--force-file-permissions"; fi)
+        $(if [ ${{ inputs.gh-code-scanning-compat }} = true ]; then echo "--gh-code-scanning-compat"; fi)
