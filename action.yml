@@ -56,7 +56,7 @@ runs:
       run: echo "::set-env name=CLI_SCRIPT_PATH::${{ github.action_path }}/codacy-analysis-cli.sh"
     - name: "Download Codacy CLI script"
       shell: bash
-      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/3.6.0/bin/codacy-analysis-cli.sh > ${{ env.CLI_SCRIPT_PATH }}
+      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/4.0.0/bin/codacy-analysis-cli.sh > ${{ env.CLI_SCRIPT_PATH }}
     - name: "Change Codacy CLI script permissions"
       shell: bash
       run: chmod +x ${{ env.CLI_SCRIPT_PATH }}
@@ -64,7 +64,7 @@ runs:
       shell: bash
       run: >-
         ${{ env.CLI_SCRIPT_PATH }}
-        analyse
+        analyze
         $(if [ ${{ inputs.verbose }} = true ]; then echo "--verbose"; fi)
         $(if [ ${{ inputs.project-token }} ]; then echo "--project-token ${{ inputs.project-token }}"; fi)
         $(if [ ${{ inputs.codacy-api-base-url }} ]; then echo "--codacy-api-base-url ${{ inputs.codacy-api-base-url }}"; fi)
