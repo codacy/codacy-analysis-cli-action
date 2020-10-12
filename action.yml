@@ -56,12 +56,15 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: "Set Codacy CLI version"
+      shell: bash
+      run: echo "CODACY_ANALYSIS_CLI_VERSION=4.0.0" >> $GITHUB_ENV
     - name: "Set script path environment variable"
       shell: bash
-      run: echo "::set-env name=CLI_SCRIPT_PATH::${{ github.action_path }}/codacy-analysis-cli.sh"
+      run: echo "CLI_SCRIPT_PATH=${{ github.action_path }}/codacy-analysis-cli.sh" >> $GITHUB_ENV
     - name: "Download Codacy CLI script"
       shell: bash
-      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/4.0.0/bin/codacy-analysis-cli.sh > ${{ env.CLI_SCRIPT_PATH }}
+      run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/${{ env.CODACY_ANALYSIS_CLI_VERSION }}/bin/codacy-analysis-cli.sh > ${{ env.CLI_SCRIPT_PATH }}
     - name: "Change Codacy CLI script permissions"
       shell: bash
       run: chmod +x ${{ env.CLI_SCRIPT_PATH }}
@@ -69,7 +72,7 @@ runs:
       shell: bash
       run: >-
         ${{ env.CLI_SCRIPT_PATH }}
-        analyse
+        analyze
         $(if [ ${{ inputs.verbose }} = true ]; then echo "--verbose"; fi)
         $(if [ ${{ inputs.project-token }} ]; then echo "--project-token ${{ inputs.project-token }}"; fi)
         $(if [ ${{ inputs.codacy-api-base-url }} ]; then echo "--codacy-api-base-url ${{ inputs.codacy-api-base-url }}"; fi)
