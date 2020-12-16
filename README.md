@@ -10,17 +10,7 @@ GitHub Action for running Codacy static analysis on over 30 [supported languages
 
 <br/>
 
-[Codacy](https://www.codacy.com/) is an automated code review tool that monitors your technical debt, helps you improve your code quality, teaches best practices to your developers, and helps you save time in code reviews:
-
--   Identify new static analysis issues
--   Commit and pull request analysis with GitHub
--   Auto-comments on commits and pull requests
--   Integrations with Slack and Jira
--   Track issues in Code Style, Security, Error Proneness, Performance, Unused Code and other categories
-
-Codacy also helps keep track of Code Coverage, Code Duplication, and Code Complexity.
-
-Codacy supports PHP, Python, Ruby, Java, JavaScript, and Scala, among others, and is free for Open Source projects.
+[Codacy](https://www.codacy.com/) is the easiest way to ensure your team is writing high quality code.It supports and maintains all the tools you need to analyze more than 30 programming languages such as PHP, Javascript, Python, Java, and Ruby. It allows you to define your own quality rules, code patterns and quality settings you'd like to enforce to prevent issues from entering the master branch.
 
 ## GitHub Action
 
