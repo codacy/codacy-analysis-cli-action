@@ -10,7 +10,7 @@ GitHub Action for running Codacy static analysis on over 30 [supported languages
 
 <br/>
 
-[Codacy](https://www.codacy.com/) is the easiest way to ensure your team is writing high quality code.It supports and maintains all the tools you need to analyze more than 30 programming languages such as PHP, Javascript, Python, Java, and Ruby. It allows you to define your own quality rules, code patterns and quality settings you'd like to enforce to prevent issues from entering the master branch.
+[Codacy](https://www.codacy.com/) is the easiest way to ensure your team is writing high quality code. It allows you to define your own quality rules, code patterns and quality settings you'd like to enforce to prevent issues from entering the master branch. Codacy supports and maintains all the tools you need to analyze [more than 30 programming languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) such as PHP, Javascript, Python, Java, and Ruby.
 
 ## GitHub Action
 
