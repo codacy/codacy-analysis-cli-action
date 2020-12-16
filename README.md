@@ -1,5 +1,7 @@
 # GitHub Action for Codacy Analysis CLI
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/946b78614f154f81b1c9c0514fd9f35c)](https://www.codacy.com/gh/codacy/codacy-analysis-cli-action/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=codacy/codacy-analysis-cli-action&amp;utm_campaign=Badge_Grade)
+
 This is a GitHub Action for invoking the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and returning identified issues in the code.
 
 ## GitHub Action
