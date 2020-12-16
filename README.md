@@ -5,7 +5,9 @@
 GitHub Action for running Codacy static analysis on over 30 [supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) and returning identified issues in the code.
 
 <br/>
-<img src="images/codacy-logo.svg" alt="Codacy" width="400"/>
+
+<a href="https://www.codacy.com" target="_blank"><img src="images/codacy-logo.svg" alt="Codacy" width="400"/></a>
+
 <br/>
 
 [Codacy](https://www.codacy.com/) is an automated code review tool that monitors your technical debt, helps you improve your code quality, teaches best practices to your developers, and helps you save time in code reviews:
