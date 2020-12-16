@@ -2,7 +2,21 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/946b78614f154f81b1c9c0514fd9f35c)](https://www.codacy.com/gh/codacy/codacy-analysis-cli-action/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=codacy/codacy-analysis-cli-action&amp;utm_campaign=Badge_Grade)
 
-This is a GitHub Action for invoking the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and returning identified issues in the code.
+GitHub Action for running Codacy static analysis on over 30 [supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) and returning identified issues in the code.
+
+![Codacy](images/codacy-logo.svg)
+
+[Codacy](https://www.codacy.com/) is an automated code review tool that monitors your technical debt, helps you improve your code quality, teaches best practices to your developers, and helps you save time in code reviews:
+
+-   Identify new static analysis issues
+-   Commit and pull request analysis with GitHub
+-   Auto-comments on commits and pull requests
+-   Integrations with Slack and Jira
+-   Track issues in Code Style, Security, Error Proneness, Performance, Unused Code and other categories
+
+Codacy also helps keep track of Code Coverage, Code Duplication, and Code Complexity.
+
+Codacy supports PHP, Python, Ruby, Java, JavaScript, and Scala, among others, and is free for Open Source projects.
 
 ## GitHub Action
 
@@ -60,23 +74,3 @@ with:
 We love contributions, feedback, and bug reports.
 If you run into issues while running this action,
 [open an issue](https://github.com/codacy/codacy-analysis-cli-action/issues) in this repository.
-
-## What is Codacy
-
-[Codacy](https://www.codacy.com/) is an Automated Code Review Tool that monitors your technical debt, helps you improve your code quality, teaches best practices to your developers, and helps you save time in Code Reviews.
-
-### Among Codacy’s features
-
--   Identify new Static Analysis issues
--   Commit and Pull Request Analysis with GitHub, BitBucket/Stash, GitLab (and also direct git repositories)
--   Auto-comments on Commits and Pull Requests
--   Integrations with Slack, HipChat, Jira, YouTrack
--   Track issues in Code Style, Security, Error Proneness, Performance, Unused Code and other categories
-
-Codacy also helps keep track of Code Coverage, Code Duplication, and Code Complexity.
-
-Codacy supports PHP, Python, Ruby, Java, JavaScript, and Scala, among others.
-
-### Free for Open Source
-
-Codacy is free for Open Source projects.
