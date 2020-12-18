@@ -22,10 +22,15 @@ Codacy also helps keep track of Code Coverage, Code Duplication, and Code Comple
 
 Codacy supports PHP, Python, Ruby, Java, JavaScript, and Scala, among others, and is free for Open Source projects.
 
-## GitHub Action
+## Usage
 
-The following is an example GitHub Action workflow that uses the Codacy Analysis CLI
-to analyze each commit and pull request.
+By default, the GitHub action:
+
+-   Analyzes each commit or pull request by running all the supported static code analysis tools for the languages in your repository, with their default configurations.
+-   Prints the analysis results on the console, which are also visible on the GitHub Action's workflow panel.  
+-   Fails the workflow if it finds at least one issue in your code.
+
+To use the GitHub Action, add the following to a file `.github/workflows/codacy-analysis-cli.yaml` in your repository:
 
 ```yaml
 name: codacy-analysis-cli
@@ -43,18 +48,9 @@ jobs:
         uses: codacy/codacy-analysis-cli-action@master
 ```
 
-Running the action with the default configurations will:
-
-- Analyze the current commit or pull request by running all supported static code analysis tools, with their default configurations,
-  for the languages you are using.
-- Print analysis results on the console, visible on the GitHub Action's workflow panel.
-- Fail the workflow if at least one issue is found in your code.
-
-Read the next section to learn how you can further configure this action.
-
 ## Extra configurations
 
-The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and supports the same parameters as the command `analyze`, with the following exceptions:
+The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and supports [the same parameters as the command `analyze`](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration), with the following exceptions:
 
 - `--commit-uuid` (the action always analyzes the commit that triggered it)
 - `--api-token`, `--username`, and `--project` (use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead)
