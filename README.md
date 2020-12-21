@@ -22,30 +22,78 @@ Codacy also helps keep track of Code Coverage, Code Duplication, and Code Comple
 
 Codacy supports PHP, Python, Ruby, Java, JavaScript, and Scala, among others, and is free for Open Source projects.
 
-## Usage
+## Default settings
 
 By default, the GitHub action:
 
 -   Analyzes each commit or pull request by running all the supported static code analysis tools for the languages in your repository, with their default configurations.
--   Prints the analysis results on the console, which are also visible on the GitHub Action's workflow panel.  
+-   Prints the analysis results on the console, which is visible on the GitHub Action's workflow panel.  
 -   Fails the workflow if it finds at least one issue in your code.
 
-To use the GitHub Action, add the following to a file `.github/workflows/codacy-analysis-cli.yaml` in your repository:
+To use the GitHub Action, add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository:
 
 ```yaml
-name: codacy-analysis-cli
+name: Codacy Analysis CLI
 
 on: ["push"]
 
 jobs:
   codacy-analysis-cli:
-    runs-on: ubuntu-latest
     name: Codacy Analysis CLI
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@master
-      - name: Run codacy-analysis-cli
+
+      - name: Run Codacy Analysis CLI
         uses: codacy/codacy-analysis-cli-action@master
+```
+
+## Integration with GitHub code scanning
+
+When integrating with [GitHub code scanning](https://docs.github.com/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning), the GitHub action:
+
+-   Analyzes each commit or pull request by running all the supported static code analysis tools for the languages in your repository, with their default configurations.
+-   Generates an output file `results.sarif` containing the analysis results
+-   Uploads the file `results.sarif` to GitHub, which then displays the analysis results under the tab **Security**, page **Code scanning alerts**.
+
+![GitHub code scanning integration](images/github-code-scanning.png)
+
+To use the GitHub Action with GitHub code scanning integration, add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository:
+
+```yaml
+name: Codacy Security Scan
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  codacy-security-scan:
+    name: Codacy Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Run Codacy Analysis CLI
+        uses: codacy/codacy-analysis-cli-action@master
+        with:
+          output: results.sarif
+          format: sarif
+          # Adjust severity of non-security issues
+          gh-code-scanning-compat: true
+          # Force 0 exit code to allow SARIF file generation
+          # This will handover control about PR rejection to the GitHub side
+          max-allowed-issues: 2147483647
+      
+      # Upload the SARIF file generated in the previous step
+      - name: Upload SARIF results file
+        uses: github/codeql-action/upload-sarif@master
+        with:
+          sarif_file: results.sarif
 ```
 
 ## Extra configurations
