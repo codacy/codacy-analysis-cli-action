@@ -1,0 +1,9 @@
+.algolia-cache
+.DS_Store
+.env
+node_modules
+npm-debug.log
+coverage
+.linkinator
+broken_links.md
+dist

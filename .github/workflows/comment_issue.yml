@@ -95,3 +95,5 @@ jobs:
             {panel}
             _[Github permalink |${{ github.event.comment.html_url }}]_
             {panel}
+- name: Codacy Analysis CLI
+  uses: codacy/codacy-analysis-cli-action@1.0.1
