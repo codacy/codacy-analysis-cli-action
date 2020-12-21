@@ -26,7 +26,7 @@ Codacy supports PHP, Python, Ruby, Java, JavaScript, and Scala, among others, an
 
 By default, the GitHub action:
 
--   Analyzes each commit or pull request by running all the supported static code analysis tools for the languages in your repository, with their default configurations.
+-   Analyzes each commit or pull request by running all the static code analysis tools for the languages in your repository that are supported by Codacy.
 -   Prints the analysis results on the console, which is visible on the GitHub Action's workflow panel.  
 -   Fails the workflow if it finds at least one issue in your code.
 
@@ -53,8 +53,8 @@ jobs:
 
 When integrating with [GitHub code scanning](https://docs.github.com/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning), the GitHub action:
 
--   Analyzes each commit or pull request by running all the supported static code analysis tools for the languages in your repository, with their default configurations.
--   Generates an output file `results.sarif` containing the analysis results
+-   Analyzes each commit or pull request on the `master` and `main` branches by running all the static code analysis tools for the languages in your repository that are supported by Codacy.
+-   Outputs the analysis results to a file `results.sarif`.
 -   Uploads the file `results.sarif` to GitHub, which then displays the analysis results under the tab **Security**, page **Code scanning alerts**.
 
 ![GitHub code scanning integration](images/github-code-scanning.png)
