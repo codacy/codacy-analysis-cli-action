@@ -24,13 +24,13 @@ Codacy supports PHP, Python, Ruby, Java, JavaScript, and Scala, among others, an
 
 ## Default settings
 
-By default, the GitHub action:
+By default, the Codacy GitHub Action:
 
--   Analyzes each commit or pull request by running all the static code analysis tools for the languages in your repository that are supported by Codacy.
+-   Analyzes each commit or pull request by running all supported static code analysis tools for the languages found in your repository.
 -   Prints the analysis results on the console, which is visible on the GitHub Action's workflow panel.  
 -   Fails the workflow if it finds at least one issue in your code.
 
-To use the GitHub Action, add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository:
+To use the GitHub Action with default settings, add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository:
 
 ```yaml
 name: Codacy Analysis CLI
@@ -51,13 +51,14 @@ jobs:
 
 ## Integration with GitHub code scanning
 
-When integrating with [GitHub code scanning](https://docs.github.com/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning), the GitHub action:
-
--   Analyzes each commit or pull request on the `master` and `main` branches by running all the static code analysis tools for the languages in your repository that are supported by Codacy.
--   Outputs the analysis results to a file `results.sarif`.
--   Uploads the file `results.sarif` to GitHub, which then displays the analysis results under the tab **Security**, page **Code scanning alerts**.
+Integrate the Codacy GitHub Action with [GitHub code scanning](https://docs.github.com/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning) to display the analysis results on your repository under the tab **Security**, page **Code scanning alerts**:
 
 ![GitHub code scanning integration](images/github-code-scanning.png)
+
+In this scenario, the GitHub Action:
+
+-   Analyzes each commit and pull request to the `master` or `main` branch by running all supported static code analysis tools for the languages found in your repository.
+-   Outputs the analysis results to a file `results.sarif`, which is then uploaded to GitHub.
 
 To use the GitHub Action with GitHub code scanning integration, add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository:
 
