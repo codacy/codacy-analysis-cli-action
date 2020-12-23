@@ -97,24 +97,61 @@ jobs:
           sarif_file: results.sarif
 ```
 
+## Integration with Codacy for client-side tools
+
+Use the GitHub Action to [run a specific Codacy client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
+
+In this scenario, the GitHub action:
+
+-   Analyzes each commit or pull request by running a specific client-side tool with the configurations that you defined on Codacy.
+-   Uploads the analysis results to Codacy.
+
+After this, Codacy displays the results of the analysis of your commits and pull requests on the UI dashboards, and optionally reports the status of the analysis directly on your GitHub pull requests.
+
+![Codacy integration](images/codacy-analysis-integration.png)
+
+To use the GitHub Action with Codacy integration:
+
+1.  On Codacy, obtain a [Project API Token](https://docs.codacy.com/repositories-configure/integrations/project-api/) for your repository.
+
+    You need the Project API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
+
+2.  On GitHub, store the Project API Token as an [encrypted secret for your repository](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the name `CODACY_PROJECT_TOKEN`.
+
+    Do this to avoid committing the secret token to your repository.
+
+3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the client-side tool that the Codacy Analysis CLI will run locally:
+
+    ```yaml
+    name: Codacy Analysis CLI
+
+    on: ["push"]
+
+    jobs:
+      codacy-analysis-cli:
+        name: Codacy Analysis CLI
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@master
+
+          - name: Run Codacy Analysis CLI
+            uses: codacy/codacy-analysis-cli-action@master
+            with:
+              tool: <CLIENT_SIDE_TOOL_NAME>
+              project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+              upload: true
+              max-allowed-issues: 2147483647
+    ```
+
+4.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
+
 ## Extra configurations
 
 The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and supports [the same parameters as the command `analyze`](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration), with the following exceptions:
 
 - `--commit-uuid` (the action always analyzes the commit that triggered it)
 - `--api-token`, `--username`, and `--project` (use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead)
-
-When using `--project-token` make sure that you use [GitHub security features](https://docs.github.com/en/actions/reference/encrypted-secrets)
-to avoid committing the secret token to your repository. For example, if you store your Codacy project
-token in GitHub, this is how you would use it in the action workflow:
-
-```yaml
-# ...
-uses: codacy/codacy-analysis-cli-action@master
-with:
-    project-token: ${{ secrets.<PROJECT_TOKEN_NAME> }}
-# ...
-```
 
 ## Contributing
 
