@@ -2,15 +2,19 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/946b78614f154f81b1c9c0514fd9f35c)](https://www.codacy.com/gh/codacy/codacy-analysis-cli-action/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=codacy/codacy-analysis-cli-action&amp;utm_campaign=Badge_Grade)
 
-GitHub Action for running Codacy static analysis on over 30 [supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) and returning identified issues in the code.
+GitHub Action for running Codacy static analysis on [over 30 supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) and returning identified issues in the code.
 
 <br/>
-
 <a href="https://www.codacy.com" target="_blank"><img src="images/codacy-logo.svg" alt="Codacy" width="400"/></a>
-
 <br/>
 
-[Codacy](https://www.codacy.com/) is the easiest way to ensure your team is writing high quality code. It allows you to define your own quality rules, code patterns and quality settings you'd like to enforce to prevent issues from entering the master branch. Codacy supports and maintains all the tools you need to analyze [more than 30 programming languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) such as PHP, Javascript, Python, Java, and Ruby.
+[Codacy](https://www.codacy.com/) is an automated code review tool that makes it easy to ensure your team is writing high-quality code by analyzing more than 30 programming languages such as PHP, JavaScript, Python, Java, and Ruby. Codacy allows you to define your own quality rules, code patterns and quality settings you'd like to enforce to prevent issues on your codebase.
+
+The Codacy GitHub Action supports the following scenarios:
+
+-   **[Analysis with default settings](#default-settings):** Analyzes each commit and pull request and fails the fails the workflow if it finds issues in your code.
+-   **[Integration with GitHub code scanning](#integration-with-github-code-scanning):** Analyzes each commit and pull request and uploads the results to GitHub, which displays the identified issues under your repository's tab **Security**.
+-   **[Integration with Codacy for client-side tools](#integration-with-codacy-for-client-side-tools):** Analyzes each commit and pull request using one of Codacy's client-side tools and uploads the results to Codacy, which displays the identified issues in UI dashboards and can also report the status of the analysis on your pull requests.
 
 ## GitHub Action
 
