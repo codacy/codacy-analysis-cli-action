@@ -112,15 +112,19 @@ After this, Codacy displays the results of the analysis of your commits and pull
 
 To use the GitHub Action with Codacy integration:
 
-1.  On Codacy, obtain a [Project API Token](https://docs.codacy.com/repositories-configure/integrations/project-api/) for your repository.
+1.  On Codacy, enable **Run analysis through build server** in your repository **Settings**, tab **General**, **Repository analysis**.
+
+    This setting enables Codacy to wait for the results of the local analysis before resuming the analysis of your commits.
+
+2.  On Codacy, obtain a [Project API Token](https://docs.codacy.com/repositories-configure/integrations/project-api/) for your repository.
 
     You need the Project API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
 
-2.  On GitHub, store the Project API Token as an [encrypted secret for your repository](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the name `CODACY_PROJECT_TOKEN`.
+3.  On GitHub, store the Project API Token as an [encrypted secret for your repository](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the name `CODACY_PROJECT_TOKEN`.
 
     Do this to avoid committing the secret token to your repository.
 
-3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the client-side tool that the Codacy Analysis CLI will run locally:
+4.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the client-side tool that the Codacy Analysis CLI will run locally:
 
     ```yaml
     name: Codacy Analysis CLI
@@ -144,7 +148,7 @@ To use the GitHub Action with Codacy integration:
               max-allowed-issues: 2147483647
     ```
 
-4.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
+5.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
 
 ## Extra configurations
 
