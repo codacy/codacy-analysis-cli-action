@@ -98,15 +98,18 @@ jobs:
 ```
 
 
-## Integration with Codacy client-side tools
+## Integration with Codacy for client-side tools
 
-When integrating with Codacy, the GitHub action:
+Use the GitHub Action to [run a specific Codacy client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
+
+In this scenario, the GitHub action:
+
+-   Analyzes each commit or pull request by running a specific client-side tool with the configurations that you defined on Codacy.
+-   Uploads the analysis results to Codacy.
+
+After this, Codacy displays the results of the analysis of your commits and pull requests on the UI dashboards, and optionally reports the status of the analysis directly on your GitHub pull requests.
 
 ![Codacy integration](images/codacy-analysis-integration.png)
-
--   Analyzes each commit or pull request by running all the supported static code analysis tools for the languages in your repository, with the configurations that you defined on Codacy.
--   Uploads the analysis results to Codacy
--   Codacy displays the results of the analysis of your commits and pull requests on the UI dashboards, and optionally reports the status on your GitHub pull requests.
 
 To use the GitHub Action with Codacy integration:
 
