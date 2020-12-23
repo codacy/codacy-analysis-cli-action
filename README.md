@@ -97,7 +97,6 @@ jobs:
           sarif_file: results.sarif
 ```
 
-
 ## Integration with Codacy for client-side tools
 
 Use the GitHub Action to [run a specific Codacy client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
