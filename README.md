@@ -30,6 +30,8 @@ By default, the Codacy GitHub Action:
 -   Prints the analysis results on the console, which is visible on the GitHub Action's workflow panel.  
 -   Fails the workflow if it finds at least one issue in your code.
 
+![Failed Codacy analysis workflow](images/failed-workflow.png)
+
 To use the GitHub Action with default settings, add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository:
 
 ```yaml
@@ -51,14 +53,14 @@ jobs:
 
 ## Integration with GitHub code scanning
 
-Integrate the Codacy GitHub Action with [GitHub code scanning](https://docs.github.com/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning) to display the analysis results on your repository under the tab **Security**, page **Code scanning alerts**:
-
-![GitHub code scanning integration](images/github-code-scanning.png)
+Integrate the Codacy GitHub Action with [GitHub code scanning](https://docs.github.com/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning) to display the analysis results on your repository under the tab **Security**, page **Code scanning alerts**.
 
 In this scenario, the GitHub Action:
 
 -   Analyzes each commit and pull request to the `master` or `main` branch by running all supported static code analysis tools for the languages found in your repository.
 -   Outputs the analysis results to a file `results.sarif`, which is then uploaded to GitHub.
+
+![GitHub code scanning integration](images/github-code-scanning.png)
 
 To use the GitHub Action with GitHub code scanning integration, add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository:
 
