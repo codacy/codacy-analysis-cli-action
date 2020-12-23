@@ -97,6 +97,41 @@ jobs:
           sarif_file: results.sarif
 ```
 
+
+## Integration with Codacy client-side tools
+
+When integrating with Codacy, the GitHub action:
+
+-   Analyzes each commit or pull request by running all the supported static code analysis tools for the languages in your repository, with the configurations that you defined on Codacy.
+-   Uploads the analysis results to Codacy
+-   Codacy displays the results of the analysis of your commits and pull requests on the UI dashboards, and optionally reports the status on your GitHub pull requests.
+
+![Codacy integration](images/codacy-analysis-integration.png)
+
+To use the GitHub Action with Codacy integration, add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository:
+
+```yaml
+name: Codacy Analysis CLI
+
+on: ["push"]
+
+jobs:
+  codacy-analysis-cli:
+    name: Codacy Analysis CLI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Run Codacy Analysis CLI
+        uses: codacy/codacy-analysis-cli-action@master
+        with:
+          tool: <CLIENT_SIDE_TOOL_NAME>
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          upload: true
+          max-allowed-issues: 2147483647
+```
+
 ## Extra configurations
 
 The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and supports [the same parameters as the command `analyze`](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration), with the following exceptions:
