@@ -2,27 +2,21 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/946b78614f154f81b1c9c0514fd9f35c)](https://www.codacy.com/gh/codacy/codacy-analysis-cli-action/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=codacy/codacy-analysis-cli-action&amp;utm_campaign=Badge_Grade)
 
-GitHub Action for running Codacy static analysis on [over 30 supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) simultaneously and returning identified issues in the code.
+GitHub Action for running Codacy static analysis on [over 30 supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) and returning identified issues in the code.
 
 <br/>
-
 <a href="https://www.codacy.com" target="_blank"><img src="images/codacy-logo.svg" alt="Codacy" width="400"/></a>
-
 <br/>
 
-[Codacy](https://www.codacy.com/) is an automated code review tool that monitors your technical debt, helps you improve your code quality, teaches best practices to your developers, and helps you save time in code reviews:
+[Codacy](https://www.codacy.com/) is an automated code review tool that makes it easy to ensure your team is writing high-quality code by analyzing more than 30 programming languages such as PHP, JavaScript, Python, Java, and Ruby. Codacy allows you to define your own quality rules, code patterns and quality settings you'd like to enforce to prevent issues on your codebase.
 
--   Identify new static analysis issues
--   Commit and pull request analysis with GitHub
--   Auto-comments on commits and pull requests
--   Integrations with Slack and Jira
--   Track issues in Code Style, Security, Error Proneness, Performance, Unused Code and other categories
+The Codacy GitHub Action supports the following scenarios:
 
-Codacy also helps keep track of Code Coverage, Code Duplication, and Code Complexity.
+-   **[Analysis with default settings](#analysis-with-default-settings):** Analyzes each commit and pull request and fails the fails the workflow if it finds issues in your code.
+-   **[Integration with GitHub code scanning](#integration-with-github-code-scanning):** Analyzes each commit and pull request and uploads the results to GitHub, which displays the identified issues under your repository's tab **Security**.
+-   **[Integration with Codacy for client-side tools](#integration-with-codacy-for-client-side-tools):** Analyzes each commit and pull request using one of Codacy's client-side tools and uploads the results to Codacy, which displays the identified issues in UI dashboards and can also report the status of the analysis on your pull requests.
 
-Codacy supports PHP, Python, Ruby, Java, JavaScript, and Scala, among others, and is free for Open Source projects.
-
-## Default settings
+## Analysis with default settings
 
 By default, the Codacy GitHub Action:
 
