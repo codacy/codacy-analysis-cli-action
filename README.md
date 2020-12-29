@@ -12,7 +12,7 @@ GitHub Action for running Codacy static analysis on [over 30 supported languages
 
 The Codacy GitHub Action supports the following scenarios:
 
--   **[Analysis with default settings](#analysis-with-default-settings):** Analyzes each commit and pull request and fails the fails the workflow if it finds issues in your code.
+-   **[Analysis with default settings](#analysis-with-default-settings):** Analyzes each commit and pull request and fails the workflow if it finds issues in your code.
 -   **[Integration with GitHub code scanning](#integration-with-github-code-scanning):** Analyzes each commit and pull request and uploads the results to GitHub, which displays the identified issues under your repository's tab **Security**.
 -   **[Integration with Codacy for client-side tools](#integration-with-codacy-for-client-side-tools):** Analyzes each commit and pull request using one of Codacy's client-side tools and uploads the results to Codacy, which displays the identified issues in UI dashboards and can also report the status of the analysis on your pull requests.
 
