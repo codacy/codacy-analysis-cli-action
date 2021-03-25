@@ -97,7 +97,7 @@ jobs:
 
 ## Integration with Codacy for client-side tools
 
-Use the GitHub Action to [run a specific Codacy client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
+Use the GitHub Action to run any of the [containerized Codacy client-side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
 
 In this scenario, the GitHub action:
 
@@ -122,7 +122,7 @@ To use the GitHub Action with Codacy integration:
 
     Do this to avoid committing the secret token to your repository.
 
-4.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the client-side tool that the Codacy Analysis CLI will run locally:
+4.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the containerized client-side tool that the Codacy Analysis CLI will run locally:
 
     ```yaml
     name: Codacy Analysis CLI
