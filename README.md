@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Run Codacy Analysis CLI
         uses: codacy/codacy-analysis-cli-action@master
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Run Codacy Analysis CLI
         uses: codacy/codacy-analysis-cli-action@master
@@ -90,7 +90,7 @@ jobs:
       
       # Upload the SARIF file generated in the previous step
       - name: Upload SARIF results file
-        uses: github/codeql-action/upload-sarif@master
+        uses: github/codeql-action/upload-sarif@main
         with:
           sarif_file: results.sarif
 ```
@@ -135,7 +135,7 @@ To use the GitHub Action with Codacy integration:
         runs-on: ubuntu-latest
         steps:
           - name: Checkout code
-            uses: actions/checkout@master
+            uses: actions/checkout@main
 
           - name: Run Codacy Analysis CLI
             uses: codacy/codacy-analysis-cli-action@master
