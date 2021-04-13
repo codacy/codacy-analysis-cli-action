@@ -175,9 +175,13 @@ To use the GitHub Action with Codacy integration:
               # ...
               run-gosec: "true"
 <<<<<<< HEAD
+<<<<<<< HEAD
               run-staticcheck: "true"
 =======
 >>>>>>> 68cb35d (feature: Add GoSec support)
+=======
+              run-staticcheck: "true"
+>>>>>>> f3757dc (feature: Add staticcheck support)
     ```
 
     In case you just want to run the standalone client side tools you can disable the dockerized tools by passing the `run-docker-tools: "false"` to the action.
