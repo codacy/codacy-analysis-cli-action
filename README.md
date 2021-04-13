@@ -114,11 +114,23 @@ To use the GitHub Action with Codacy integration:
 
     This setting enables Codacy to wait for the results of the local analysis before resuming the analysis of your commits.
 
-2.  On Codacy, obtain a [Project API Token](https://docs.codacy.com/repositories-configure/integrations/project-api/) for your repository.
+2.  On Codacy, obtain one of the following tokens:
 
-    You need the Project API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
+    - [Project API Token](https://docs.codacy.com/repositories-configure/integrations/project-api/)
 
-3.  On GitHub, store the Project API Token as an [encrypted secret for your repository](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the name `CODACY_PROJECT_TOKEN`.
+      You need the Project API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
+
+    - [Account API Token](https://docs.codacy.com/codacy-api/api-tokens/#account-api-tokens)
+
+      You need the Account API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
+
+      Usually you want to user Project API Token instead but to help with automation you can use the Account API Token since it will work for multiple repositories.
+
+3.  On GitHub, store the API Token as an [encrypted secret for your repository](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the correct name:
+    
+    -  Project API Token - `CODACY_PROJECT_TOKEN`
+    
+    -  Account API Token - `CODACY_API_TOKEN`
 
     Do this to avoid committing the secret token to your repository.
 
@@ -142,6 +154,8 @@ To use the GitHub Action with Codacy integration:
             with:
               tool: <CLIENT_SIDE_TOOL_NAME>
               project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+              # or
+              # api-token: ${{ secrets.CODACY_API_TOKEN }}
               upload: true
               max-allowed-issues: 2147483647
     ```
