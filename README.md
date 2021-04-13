@@ -1,6 +1,6 @@
 # Codacy GitHub Action
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/946b78614f154f81b1c9c0514fd9f35c)](https://www.codacy.com/gh/codacy/codacy-analysis-cli-action/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=codacy/codacy-analysis-cli-action&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/946b78614f154f81b1c9c0514fd9f35c)](https://www.codacy.com/gh/codacy/codacy-analysis-cli-action/dashboard?utm_source=github.com&utm_medium=referral&utm_content=codacy/codacy-analysis-cli-action&utm_campaign=Badge_Grade)
 
 GitHub Action for running Codacy static analysis on [over 30 supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) and returning identified issues in the code.
 
@@ -130,7 +130,7 @@ To use the GitHub Action with Codacy integration:
 
     Do this to avoid committing the secret token to your repository.
 
-4.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the containerized client-side tool that the Codacy Analysis CLI will run locally:
+4.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the containerized client-side tool that the Codacy Analysis CLI will run locally, or do not pass it to run all tools.
 
     ```yaml
     name: Codacy Analysis CLI
@@ -156,14 +156,36 @@ To use the GitHub Action with Codacy integration:
               max-allowed-issues: 2147483647
     ```
 
-5.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
+5.  Optionally, [enable standalone client side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) by passing the following options to the action.
+
+    ```yaml
+    name: Codacy Analysis CLI
+
+    on: ["push"]
+
+    jobs:
+      codacy-analysis-cli:
+        name: Codacy Analysis CLI
+        runs-on: ubuntu-latest
+        steps:
+          # ...
+          - name: Run Codacy Analysis CLI
+            uses: codacy/codacy-analysis-cli-action@master
+            with:
+              # ...
+              run-gosec: "true"
+    ```
+
+    In case you just want to run the standalone client side tools you can disable the dockerized tools by passing the `run-docker-tools: "false"` to the action.
+
+6.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
 
 ## Extra configurations
 
 The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and supports [the same parameters as the command `analyze`](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration), with the following exceptions:
 
-- `--commit-uuid` (the action always analyzes the commit that triggered it)
-- `--api-token`, `--username`, and `--project` (use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead)
+-   `--commit-uuid` (the action always analyzes the commit that triggered it)
+-   `--api-token`, `--username`, and `--project` (use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead)
 
 ## Contributing
 
