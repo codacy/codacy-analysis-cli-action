@@ -116,21 +116,17 @@ To use the GitHub Action with Codacy integration:
 
 2.  On Codacy, obtain one of the following tokens:
 
-    - [Project API Token](https://docs.codacy.com/repositories-configure/integrations/project-api/)
+    -   [Project API Token](https://docs.codacy.com/repositories-configure/integrations/project-api/)
 
-      You need the Project API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
+        You need the Project API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
 
-    - [Account API Token](https://docs.codacy.com/codacy-api/api-tokens/#account-api-tokens)
+    -   [Account API Token](https://docs.codacy.com/codacy-api/api-tokens/#account-api-tokens)
 
-      You need the Account API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
+        You need the Account API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
 
-      Usually you want to user Project API Token instead but to help with automation you can use the Account API Token since it will work for multiple repositories.
+        Usually you want to use the Project API Token but to help with automation you can use the Account API Token since it will work for multiple repositories.
 
-3.  On GitHub, store the API Token as an [encrypted secret for your repository](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the correct name:
-    
-    -  Project API Token - `CODACY_PROJECT_TOKEN`
-    
-    -  Account API Token - `CODACY_API_TOKEN`
+3.  On GitHub, store the API Token as an [encrypted secret for your repository](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the correct name, for the Project API Token use `CODACY_PROJECT_TOKEN` and for Account API Token use `CODACY_API_TOKEN`.
 
     Do this to avoid committing the secret token to your repository.
 
