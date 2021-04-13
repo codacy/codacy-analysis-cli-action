@@ -104,9 +104,13 @@ runs:
 
           /tmp/bin/gosec -no-fail -fmt json -log log.txt ./... > gosec-out.json
           /tmp/bin/codacy-gosec < gosec-out.json > codacy-out.json
-          curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
-            -H "Content-type: application/json" --data-binary @codacy-out.json \
-            "https://api.codacy.com/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+          if [ ${{ inputs.upload }} = true ]; then
+            curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
+              -H "Content-type: application/json" --data-binary @codacy-out.json \
+              "https://api.codacy.com/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+          else
+            cat codacy-out.json
+          fi
         else
           echo "Skipping GoSec"
         fi
@@ -152,6 +156,10 @@ runs:
     - name: "Let Codacy know it can start processing the analysis results"
       shell: bash
       run: |
-        curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
-          -H "Content-type: application/json" \
-          "https://api.codacy.com/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/resultsFinal"
+        if [ ${{ inputs.upload }} = true ]; then
+          curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
+            -H "Content-type: application/json" \
+            "https://api.codacy.com/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/resultsFinal"
+        else
+          echo "Skipping upload"
+        fi
