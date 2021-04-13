@@ -70,9 +70,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: "Set Repository Variables"
+    - name: "Set Global Variables"
       shell: bash
       run: |
+        echo "CODACY_BASE_URL_OR_DEFAULT=$(if [ ${{ inputs.codacy-api-base-url }} ]; then echo "${{ inputs.codacy-api-base-url }}"; else echo "https://api.codacy.com"; fi)" >> $GITHUB_ENV
         echo "OWNER_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)" >> $GITHUB_ENV
         echo "REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)" >> $GITHUB_ENV
         echo "ORGANIZATION_PROVIDER=$(if [ "$GITHUB_SERVER_URL" == "https://github.com" ]; then echo "gh"; else echo "ghe"; fi)" >> $GITHUB_ENV
@@ -82,8 +83,11 @@ runs:
       run: |
         if [ -n "${{ inputs.api-token }}" ]; then
           echo "CURL_CODACY_AUTH_AUTHENTICATION=api-token: ${{ inputs.api-token }}" >> $GITHUB_ENV
-        else
+        elif [ -n "${{ inputs.project-token }}" ]; then
           echo "CURL_CODACY_AUTH_AUTHENTICATION=project-token: ${{ inputs.project-token }}" >> $GITHUB_ENV
+        else
+          echo "At least one authentication method is required."
+          exit 1
         fi
 
     - name: "Run GoSec"
@@ -107,7 +111,7 @@ runs:
           if [ ${{ inputs.upload }} = true ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @codacy-out.json \
-              "https://api.codacy.com/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
           else
             cat codacy-out.json
           fi
@@ -159,7 +163,7 @@ runs:
         if [ ${{ inputs.upload }} = true ]; then
           curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
             -H "Content-type: application/json" \
-            "https://api.codacy.com/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/resultsFinal"
+            "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/resultsFinal"
         else
-          echo "Skipping upload"
+          echo "Skipping results upload"
         fi
