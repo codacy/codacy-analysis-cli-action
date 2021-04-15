@@ -143,14 +143,14 @@ runs:
           chmod +x ./bin/codacy-staticcheck
           cd -
 
-          find . -type f -name go.mod -exec bash -c 'cd $(dirname $1); PKGS=$(go list ./...); /tmp/staticcheck/staticcheck -f json $PKGS' _ {} \; > staticcheck-out.json
-          /tmp/bin/codacy-staticcheck < staticcheck-out.json > codacy-out.json
+          find . -type f -name go.mod -exec bash -c 'cd $(dirname $1); PKGS=$(go list ./...); /tmp/staticcheck/staticcheck -f json $PKGS' _ {} \; > /tmp/staticcheck-out.json
+          /tmp/bin/codacy-staticcheck < /tmp/staticcheck-out.json > /tmp/codacy-out.json
           if [ ${{ inputs.upload }} = true ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
-              -H "Content-type: application/json" --data-binary @codacy-out.json \
+              -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
               "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
           else
-            cat codacy-out.json
+            cat /tmp/codacy-out.json
           fi
         else
           echo "Skipping StaticCheck"
