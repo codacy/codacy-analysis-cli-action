@@ -116,7 +116,7 @@ To use the GitHub Action with Codacy integration:
 
 2.  On Codacy, obtain one of the following tokens:
 
-    -   [Project API Token](https://docs.codacy.com/repositories-configure/integrations/project-api/)
+    -   [Project API Token](https://docs.codacy.com/codacy-api/api-tokens/#project-api-tokens)
 
         You need the Project API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
 
