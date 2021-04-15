@@ -178,10 +178,14 @@ runs:
           chmod +x ./bin/codacy-clang-tidy
           cd -
 
-          /tmp/bin/codacy-clang-tidy < "${{ inputs.clang-tidy-output }}" > codacy-out.json
-          curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
-            -H "Content-type: application/json" --data-binary @codacy-out.json \
-            "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+          /tmp/bin/codacy-clang-tidy < "${{ inputs.clang-tidy-output }}" > /tmp/codacy-out.json
+          if [ ${{ inputs.upload }} = true ]; then
+            curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
+              -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+          else
+            cat /tmp/codacy-out.json
+          fi
         else
           echo "Skipping Clang Tidy"
         fi
@@ -200,10 +204,14 @@ runs:
           chmod +x ./bin/codacy-faux-pas
           cd -
 
-          /tmp/bin/codacy-faux-pas < "${{ inputs.faux-pas-output }}" > codacy-out.json
-          curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
-            -H "Content-type: application/json" --data-binary @codacy-out.json \
-            "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+          /tmp/bin/codacy-faux-pas < "${{ inputs.faux-pas-output }}" > /tmp/codacy-out.json
+          if [ ${{ inputs.upload }} = true ]; then
+            curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
+              -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+          else
+            cat /tmp/codacy-out.json
+          fi
         else
           echo "Skipping Faux Pas"
         fi
