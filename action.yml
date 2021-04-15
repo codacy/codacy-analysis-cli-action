@@ -32,6 +32,7 @@ inputs:
     description: "Number of tools to run in parallel"
   max-allowed-issues:
     required: false
+    default: "2147483647"
     description: "Maximum number of issues allowed for the analysis to succeed"
   tool:
     required: false
