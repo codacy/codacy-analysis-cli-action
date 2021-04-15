@@ -64,6 +64,7 @@ runs:
       run: |
         echo "OWNER_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)" >> $GITHUB_ENV
         echo "REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)" >> $GITHUB_ENV
+        echo "ORGANIZATION_PROVIDER=$(if [ "$GITHUB_SERVER_URL" == "https://github.com" ]; then echo "gh"; else echo "ghe"; fi)" >> $GITHUB_ENV
     - name: "Set Codacy CLI version"
       shell: bash
       run: echo "CODACY_ANALYSIS_CLI_VERSION=5.2.1" >> $GITHUB_ENV
@@ -83,7 +84,7 @@ runs:
           analyze
           $(if [ ${{ inputs.verbose }} = true ]; then echo "--verbose"; fi)
           $(if [ ${{ inputs.project-token }} ]; then echo "--project-token ${{ inputs.project-token }}"; fi)
-          $(if [ ${{ inputs.api-token }} ]; then echo "--api-token ${{ inputs.api-token }} --username $OWNER_NAME --project $REPOSITORY_NAME"; fi)
+          $(if [ ${{ inputs.api-token }} ]; then echo "--api-token ${{ inputs.api-token }} --username $OWNER_NAME --project $REPOSITORY_NAME --provider $ORGANIZATION_PROVIDER"; fi)
           $(if [ ${{ inputs.codacy-api-base-url }} ]; then echo "--codacy-api-base-url ${{ inputs.codacy-api-base-url }}"; fi)
           $(if [ ${{ inputs.format }} ]; then echo "--format ${{ inputs.format }}"; fi)
           $(if [ ${{ inputs.output }} ]; then echo "--output ${{ inputs.output }}"; fi)
