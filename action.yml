@@ -106,14 +106,14 @@ runs:
           chmod +x ./bin/codacy-gosec
           cd -
 
-          /tmp/bin/gosec -no-fail -fmt json -log log.txt ./... > gosec-out.json
-          /tmp/bin/codacy-gosec < gosec-out.json > codacy-out.json
+          /tmp/bin/gosec -no-fail -fmt json -log /tmp/log.txt ./... > /tmp/gosec-out.json
+          /tmp/bin/codacy-gosec < /tmp/gosec-out.json > /tmp/codacy-out.json
           if [ ${{ inputs.upload }} = true ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
-              -H "Content-type: application/json" --data-binary @codacy-out.json \
+              -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
               "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
           else
-            cat codacy-out.json
+            cat /tmp/codacy-out.json
           fi
         else
           echo "Skipping GoSec"
