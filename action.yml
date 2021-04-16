@@ -85,8 +85,8 @@ runs:
           echo "CURL_CODACY_AUTH_AUTHENTICATION=api-token: ${{ inputs.api-token }}" >> $GITHUB_ENV
         elif [ -n "${{ inputs.project-token }}" ]; then
           echo "CURL_CODACY_AUTH_AUTHENTICATION=project-token: ${{ inputs.project-token }}" >> $GITHUB_ENV
-        else
-          echo "At least one authentication method is required."
+        elif [ ${{ inputs.upload }} = true ]; then
+          echo "At least one authentication method is required to upload results."
           exit 1
         fi
 
