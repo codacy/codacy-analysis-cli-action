@@ -179,6 +179,28 @@ To use the GitHub Action with Codacy integration:
 
     In case you just want to run the standalone client side tools you can disable the dockerized tools by passing the `run-docker-tools: "false"` to the action.
 
+    In the case of Clang Tidy and Faux Pas, due to the complex orchestration of the tool, this action will instead receive the path to a file with the outputs of the tool and will then push them to Codacy.
+    To pass the file use the configurations bellow:
+
+    ```yaml
+    name: Codacy Analysis CLI
+
+    on: ["push"]
+
+    jobs:
+      codacy-analysis-cli:
+        name: Codacy Analysis CLI
+        runs-on: ubuntu-latest
+        steps:
+          # ...
+          - name: Run Codacy Analysis CLI
+            uses: codacy/codacy-analysis-cli-action@master
+            with:
+              # ...
+              clang-tidy-output: "path/to/output"
+              faux-pas-output: "path/to/output"
+    ```
+
 6.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
 
 ## Extra configurations

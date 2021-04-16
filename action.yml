@@ -71,6 +71,14 @@ inputs:
     required: false
     description: >-
       Run StaticCheck. Possible values (true|false)
+  clang-tidy-output:
+    required: false
+    description: >-
+      Path to a file containing the output of Clang Tidy.
+  faux-pas-output:
+    required: false
+    description: >-
+      Path to a file containing the output of Faux Pas.
 runs:
   using: "composite"
   steps:
@@ -154,6 +162,58 @@ runs:
           fi
         else
           echo "Skipping StaticCheck"
+        fi
+
+    - name: "Parse and Push Clang Tidy results"
+      shell: bash
+      run: |
+        set -eux
+
+        if [ -n "${{ inputs.clang-tidy-output }}" ]; then
+          cd /tmp
+          curl -fsSL https://api.github.com/repos/codacy/codacy-clang-tidy/releases/latest \
+            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
+            | cut -d '"' -f 4 \
+            | xargs -L 1 curl -fsSL -o /tmp/bin/codacy-clang-tidy
+          chmod +x ./bin/codacy-clang-tidy
+          cd -
+
+          /tmp/bin/codacy-clang-tidy < "${{ inputs.clang-tidy-output }}" > /tmp/codacy-out.json
+          if [ ${{ inputs.upload }} = true ]; then
+            curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
+              -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+          else
+            cat /tmp/codacy-out.json
+          fi
+        else
+          echo "Skipping Clang Tidy"
+        fi
+
+    - name: "Parse and Push Faux Pas results"
+      shell: bash
+      run: |
+        set -eux
+
+        if [ -n "${{ inputs.faux-pas-output }}" ]; then
+          cd /tmp
+          curl -fsSL https://api.github.com/repos/codacy/codacy-faux-pas/releases/latest \
+            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
+            | cut -d '"' -f 4 \
+            | xargs -L 1 curl -fsSL -o /tmp/bin/codacy-faux-pas
+          chmod +x ./bin/codacy-faux-pas
+          cd -
+
+          /tmp/bin/codacy-faux-pas < "${{ inputs.faux-pas-output }}" > /tmp/codacy-out.json
+          if [ ${{ inputs.upload }} = true ]; then
+            curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
+              -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+          else
+            cat /tmp/codacy-out.json
+          fi
+        else
+          echo "Skipping Faux Pas"
         fi
 
     - name: "Set Codacy CLI version"
