@@ -121,7 +121,7 @@ To use the GitHub Action with Codacy integration:
 
     > ⚠️ **Never write API tokens on your configuration files** and keep your API tokens well protected, as they grant owner permissions to your projects on Codacy.
 
-3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the containerized client-side tool that the Codacy Analysis CLI will run locally, or do not pass it to run all tools.
+3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the [**containerized** client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) that the Codacy Analysis CLI will run locally, or don't specify this parameter to run all tools supported by Codacy:
 
     ```yaml
     name: Codacy Analysis CLI
@@ -147,49 +147,24 @@ To use the GitHub Action with Codacy integration:
               max-allowed-issues: 2147483647
     ```
 
-4.  Optionally, [enable standalone client side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) by passing the following options to the action.
+4.  Optionally, specify the following parameters to run [**standalone** client-side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/):
 
     ```yaml
-    name: Codacy Analysis CLI
-
-    on: ["push"]
-
-    jobs:
-      codacy-analysis-cli:
-        name: Codacy Analysis CLI
-        runs-on: ubuntu-latest
-        steps:
-          # ...
-          - name: Run Codacy Analysis CLI
-            uses: codacy/codacy-analysis-cli-action@master
-            with:
-              # ...
-              run-gosec: "true"
-              run-staticcheck: "true"
+    run-gosec: "true"
+    run-staticcheck: "true"
     ```
 
-    In case you just want to run the standalone client side tools you can disable the dockerized tools by passing the `run-docker-tools: "false"` to the action.
-
-    In the case of Clang Tidy and Faux Pas, due to the complex orchestration of the tool, this action will instead receive the path to a file with the outputs of the tool and will then push them to Codacy.
-    To pass the file use the configurations bellow:
+    Due to the complex orchestration of the tools Clang-Tidy and Faux Pas, in this case the action can receive instead the output files of the tools and uploads them to Codacy:
 
     ```yaml
-    name: Codacy Analysis CLI
+    clang-tidy-output: "path/to/output"
+    faux-pas-output: "path/to/output"
+    ```
 
-    on: ["push"]
+    If you only want to run the standalone client-side tools and not all the containerized tools supported by Codacy, specify:
 
-    jobs:
-      codacy-analysis-cli:
-        name: Codacy Analysis CLI
-        runs-on: ubuntu-latest
-        steps:
-          # ...
-          - name: Run Codacy Analysis CLI
-            uses: codacy/codacy-analysis-cli-action@master
-            with:
-              # ...
-              clang-tidy-output: "path/to/output"
-              faux-pas-output: "path/to/output"
+    ```yaml
+    run-docker-tools: "false"
     ```
 
 5.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
