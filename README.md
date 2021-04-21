@@ -114,23 +114,14 @@ To use the GitHub Action with Codacy integration:
 
     This setting enables Codacy to wait for the results of the local analysis before resuming the analysis of your commits.
 
-2.  On Codacy, obtain one of the following tokens:
+2.  Set up an API token to allow the GitHub Action to authenticate on Codacy:
 
-    -   [Project API Token](https://docs.codacy.com/codacy-api/api-tokens/#project-api-tokens)
+    -   **If you're setting up coverage for one repository**, [obtain a project API token](../codacy-api/api-tokens/#project-api-tokens) and store it as an [encrypted secret for your **repository**](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the name `CODACY_PROJECT_TOKEN`.
+    -   **If you're setting up and automating coverage for multiple repositories**, [obtain an account API token](../codacy-api/api-tokens/#account-api-tokens) and store it as an [encrypted secret for your **organization**](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-an-organization) with the name `CODACY_API_TOKEN`.
 
-        You need the Project API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
+    > ⚠️ **Never write API tokens on your configuration files** and keep your API tokens well protected, as they grant owner permissions to your projects on Codacy.
 
-    -   [Account API Token](https://docs.codacy.com/codacy-api/api-tokens/#account-api-tokens)
-
-        You need the Account API Token to allow the Codacy Analysis CLI to authenticate to Codacy when reporting the analysis results.
-
-        Usually you want to use the Project API Token but to help with automation you can use the Account API Token since it will work for multiple repositories.
-
-3.  On GitHub, store the API Token as an [encrypted secret for your repository](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the correct name, for the Project API Token use `CODACY_PROJECT_TOKEN` and for Account API Token use `CODACY_API_TOKEN`.
-
-    Do this to avoid committing the secret token to your repository.
-
-4.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the containerized client-side tool that the Codacy Analysis CLI will run locally, or do not pass it to run all tools.
+3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the containerized client-side tool that the Codacy Analysis CLI will run locally, or do not pass it to run all tools.
 
     ```yaml
     name: Codacy Analysis CLI
@@ -156,7 +147,7 @@ To use the GitHub Action with Codacy integration:
               max-allowed-issues: 2147483647
     ```
 
-5.  Optionally, [enable standalone client side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) by passing the following options to the action.
+4.  Optionally, [enable standalone client side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) by passing the following options to the action.
 
     ```yaml
     name: Codacy Analysis CLI
@@ -201,7 +192,7 @@ To use the GitHub Action with Codacy integration:
               faux-pas-output: "path/to/output"
     ```
 
-6.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
+5.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
 
 ## Extra configurations
 
