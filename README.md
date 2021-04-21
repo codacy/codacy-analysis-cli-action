@@ -174,7 +174,7 @@ To use the GitHub Action with Codacy integration:
 The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and supports [the same parameters as the command `analyze`](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration), with the following exceptions:
 
 -   `--commit-uuid` (the action always analyzes the commit that triggered it)
--   `--api-token`, `--username`, and `--project` (use [`--project-token`](https://github.com/codacy/codacy-analysis-cli#project-token) instead)
+-   `--username` and `--project` (the action automatically uses the owner and name of the repository when you specify the parameter `api-token`)
 
 ## Contributing
 
