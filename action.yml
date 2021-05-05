@@ -232,6 +232,8 @@ runs:
       shell: bash
       run: |
         if [ "${{ inputs.run-docker-tools }}" == "true" ]; then
+          git clean -f
+          git checkout .
           ${{ env.CLI_SCRIPT_PATH }} \
             analyze \
             $(if [ "${{ inputs.verbose }}" = "true" ]; then echo "--verbose"; fi) \
