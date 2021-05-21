@@ -89,6 +89,7 @@ runs:
         echo "OWNER_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)" >> $GITHUB_ENV
         echo "REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)" >> $GITHUB_ENV
         echo "ORGANIZATION_PROVIDER=$(if [ "$GITHUB_SERVER_URL" == "https://github.com" ]; then echo "gh"; else echo "ghe"; fi)" >> $GITHUB_ENV
+        echo "COMMIT_SHA=$(if [ ${{ github.event_name }} == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${{ github.sha }}"; fi)" >> $GITHUB_ENV
 
     - name: "Prepare curl authentication header"
       shell: bash
@@ -123,7 +124,7 @@ runs:
           if [ ${{ inputs.upload }} = true ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
-              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/issuesRemoteResults"
           else
             cat /tmp/codacy-out.json
           fi
@@ -156,7 +157,7 @@ runs:
           if [ ${{ inputs.upload }} = true ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
-              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/issuesRemoteResults"
           else
             cat /tmp/codacy-out.json
           fi
@@ -182,7 +183,7 @@ runs:
           if [ ${{ inputs.upload }} = true ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
-              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/issuesRemoteResults"
           else
             cat /tmp/codacy-out.json
           fi
@@ -208,7 +209,7 @@ runs:
           if [ ${{ inputs.upload }} = true ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
-              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/issuesRemoteResults"
+              "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/issuesRemoteResults"
           else
             cat /tmp/codacy-out.json
           fi
@@ -218,7 +219,7 @@ runs:
 
     - name: "Set Codacy CLI version"
       shell: bash
-      run: echo "CODACY_ANALYSIS_CLI_VERSION=6.2.1" >> $GITHUB_ENV
+      run: echo "CODACY_ANALYSIS_CLI_VERSION=6.2.6" >> $GITHUB_ENV
     - name: "Set script path environment variable"
       shell: bash
       run: echo "CLI_SCRIPT_PATH=${{ github.action_path }}/codacy-analysis-cli.sh" >> $GITHUB_ENV
@@ -234,6 +235,8 @@ runs:
         if [ "${{ inputs.run-docker-tools }}" == "true" ]; then
           ${{ env.CLI_SCRIPT_PATH }} \
             analyze \
+            --skip-commit-uuid-validation \
+            --commit-uuid $COMMIT_SHA \
             $(if [ "${{ inputs.verbose }}" = "true" ]; then echo "--verbose"; fi) \
             $(if [ -n "${{ inputs.project-token }}" ]; then echo "--project-token ${{ inputs.project-token }}"; fi) \
             $(if [ -n "${{ inputs.api-token }}" ]; then echo "--api-token ${{ inputs.api-token }} --username $OWNER_NAME --project $REPOSITORY_NAME --provider $ORGANIZATION_PROVIDER"; fi) \
@@ -258,9 +261,10 @@ runs:
       shell: bash
       run: |
         if [ ${{ inputs.upload }} = true ]; then
+          echo "Uploading results for $ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME commit $COMMIT_SHA"
           curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
             -H "Content-type: application/json" \
-            "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$GITHUB_SHA/resultsFinal"
+            "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/resultsFinal"
         else
           echo "Skipping results upload"
         fi
