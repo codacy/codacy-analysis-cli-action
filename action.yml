@@ -219,7 +219,7 @@ runs:
 
     - name: "Set Codacy CLI version"
       shell: bash
-      run: echo "CODACY_ANALYSIS_CLI_VERSION=6.2.1" >> $GITHUB_ENV
+      run: echo "CODACY_ANALYSIS_CLI_VERSION=6.2.6" >> $GITHUB_ENV
     - name: "Set script path environment variable"
       shell: bash
       run: echo "CLI_SCRIPT_PATH=${{ github.action_path }}/codacy-analysis-cli.sh" >> $GITHUB_ENV
