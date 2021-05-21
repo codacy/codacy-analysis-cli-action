@@ -235,6 +235,8 @@ runs:
         if [ "${{ inputs.run-docker-tools }}" == "true" ]; then
           ${{ env.CLI_SCRIPT_PATH }} \
             analyze \
+            --skip-commit-uuid-validation \
+            --commit-uuid $COMMIT_SHA \
             $(if [ "${{ inputs.verbose }}" = "true" ]; then echo "--verbose"; fi) \
             $(if [ -n "${{ inputs.project-token }}" ]; then echo "--project-token ${{ inputs.project-token }}"; fi) \
             $(if [ -n "${{ inputs.api-token }}" ]; then echo "--api-token ${{ inputs.api-token }} --username $OWNER_NAME --project $REPOSITORY_NAME --provider $ORGANIZATION_PROVIDER"; fi) \
