@@ -82,7 +82,7 @@ inputs:
   skip-uncommitted-files-check:
     required: false
     description: >-
-      skip validation on uncommited files
+      Skip validation on uncommited files
 runs:
   using: "composite"
   steps:
