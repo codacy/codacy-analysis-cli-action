@@ -79,6 +79,10 @@ inputs:
     required: false
     description: >-
       Path to a file containing the output of Faux Pas.
+  skip-uncommitted-files-check:
+    required: false
+    description: >-
+      Skip validation on uncommited files
 runs:
   using: "composite"
   steps:
@@ -248,6 +252,7 @@ runs:
             $(if [ -n "${{ inputs.max-allowed-issues }}" ]; then echo "--max-allowed-issues ${{ inputs.max-allowed-issues }}"; fi) \
             $(if [ -n "${{ inputs.tool }}" ]; then echo "--tool ${{ inputs.tool }}"; fi) \
             $(if [ -n "${{ inputs.tool-timeout }}" ]; then echo "--tool-timeout ${{ inputs.tool-timeout }}"; fi) \
+            $(if [ "${{ inputs.skip-uncommitted-files-check }}" = "true" ]; then echo "--skip-uncommitted-files-check"; fi) \
             $(if [ "${{ inputs.upload }}" = "true" ]; then echo "--upload"; fi) \
             $(if [ "${{ inputs.fail-if-incomplete }}" = "true" ]; then echo "--fail-if-incomplete"; fi) \
             $(if [ "${{ inputs.allow-network }}" = "true" ]; then echo "--allow-network"; fi) \
