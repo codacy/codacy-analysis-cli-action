@@ -45,7 +45,7 @@ inputs:
     description: "Upload analysis results to Codacy"
   upload-batch-size:
     required: false
-    description: "Size of result batches to be uploaded to Codacy"
+    description: "Size (in number of results) of result batches to be uploaded to Codacy"
   fail-if-incomplete:
     required: false
     description: "Fail the analysis if any tool fails to run"
