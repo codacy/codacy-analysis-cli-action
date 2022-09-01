@@ -147,6 +147,16 @@ To use the GitHub Action with Codacy integration:
               max-allowed-issues: 2147483647
     ```
 
+    **If you're running a Go client-side tool** you must also set up the Go environment before running the Codacy Analysis CLI GitHub Action. We recommend using the [setup-go GitHub Action](https://github.com/actions/setup-go) for this:
+
+    ```yaml
+    - name: set-up go
+      uses: actions/setup-go@v3
+      with:
+        # Go version currently supported by Codacy
+        go-version: 1.17.13
+    ```
+
 4.  Optionally, specify the following parameters to run [**standalone** client-side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/):
 
     ```yaml
