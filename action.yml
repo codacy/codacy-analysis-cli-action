@@ -30,6 +30,9 @@ inputs:
   parallel:
     required: false
     description: "Number of tools to run in parallel"
+  max-tool-memory:
+    required: false
+    description: "Maximum of allowed memory for each tool execution"
   max-allowed-issues:
     required: false
     default: "2147483647"
@@ -252,6 +255,7 @@ runs:
             $(if [ -n "${{ inputs.output }}" ]; then echo "--output ${{ inputs.output }}"; fi) \
             $(if [ -n "${{ inputs.directory }}" ]; then echo "--directory ${{ inputs.directory }}"; fi) \
             $(if [ -n "${{ inputs.parallel }}" ]; then echo "--parallel ${{ inputs.parallel }}"; fi) \
+            $(if [ -n "${{ inputs.max-tool-memory }}" ]; then echo "--max-tool-memory ${{ inputs.max-tool-memory }}"; fi) \
             $(if [ -n "${{ inputs.max-allowed-issues }}" ]; then echo "--max-allowed-issues ${{ inputs.max-allowed-issues }}"; fi) \
             $(if [ -n "${{ inputs.tool }}" ]; then echo "--tool ${{ inputs.tool }}"; fi) \
             $(if [ -n "${{ inputs.tool-timeout }}" ]; then echo "--tool-timeout ${{ inputs.tool-timeout }}"; fi) \
