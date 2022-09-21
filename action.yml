@@ -120,7 +120,7 @@ runs:
 
         if [ "${{ inputs.run-gosec }}" == "true" ]; then
           cd /tmp
-          curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.7.0
+          curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.13.1
           chmod +x ./bin/gosec
           curl -fsSL https://api.github.com/repos/codacy/codacy-gosec/releases/latest \
             | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
