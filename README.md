@@ -154,7 +154,7 @@ To use the GitHub Action with Codacy integration:
       uses: actions/setup-go@v3
       with:
         # Go version currently supported by Codacy
-        go-version: 1.17.13
+        go-version: 1.19.1
     ```
 
 4.  Optionally, specify the following parameters to run [**standalone** client-side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/):
