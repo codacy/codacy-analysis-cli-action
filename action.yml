@@ -17,32 +17,34 @@ inputs:
     description: "API account token to retrieve your remote Codacy configuration for the project being analyzed"
   codacy-api-base-url:
     required: false
-    description: "Codacy's API URL, to retrieve your remote Codacy configuration"
+    description: "Codacy API URL to retrieve your remote Codacy configuration"
   format:
     required: false
-    description: "Format of the output file"
+    description: "Output file format"
   output:
     required: false
-    description: "Send analysis results to an output file"
+    description: "Path to a file to save the analysis results"
   directory:
     required: false
-    description: "The directory to be analyzed"
+    description: "Directory to analyze"
   parallel:
     required: false
     description: "Number of tools to run in parallel"
   max-tool-memory:
     required: false
-    description: "Maximum of allowed memory for each tool execution"
+    description: "Maximum allowed memory for running each tool (bytes)"
   max-allowed-issues:
     required: false
     default: "2147483647"
     description: "Maximum number of issues allowed for the analysis to succeed"
   tool:
     required: false
-    description: "The name of the tool to analyze the code"
+    description: >-
+      Only run a specific tool or tool category (metrics, issues, duplication).
+      For the full list of tools, see https://docs.codacy.com/repositories-configure/codacy-configuration-file/#which-tools-can-be-configured-and-which-name-should-i-use
   tool-timeout:
     required: false
-    description: "Maximum time each tool has to execute"
+    description: "Tool execution timeout (e.g. 15minutes, 1hour)"
   upload:
     required: false
     description: "Upload analysis results to Codacy"
@@ -54,41 +56,36 @@ inputs:
     description: "Fail the analysis if any tool fails to run"
   allow-network:
     required: false
-    description: "Allow network access for tools"
+    description: "Allow the tools to access the network"
   force-file-permissions:
     required: false
     description: "Force files to be readable by changing the permissions before running the analysis"
   gh-code-scanning-compat:
     required: false
     description: >-
-      Reduce issue severity by one level, for non-security issues, for compatibility with GitHub's code scanning feature.
-      This option will only have an effect when used in conjunction with '--format sarif'.
+      Reduce issue severity by one level for non-security issues, for compatibility with GitHub's code scanning feature.
+      This option only has an effect when used with 'format: sarif'.
   run-docker-tools:
     required: false
     default: "true"
     description: >-
-      Run dockerized tools. Possible values (true|false)
-      Check the full list in https://docs.codacy.com/repositories-configure/codacy-configuration-file/#which-tools-can-be-configured-and-which-name-should-i-use
+      Run all dockerized tools supported by Codacy.
+      For the full list of tools, see https://docs.codacy.com/repositories-configure/codacy-configuration-file/#which-tools-can-be-configured-and-which-name-should-i-use
   run-gosec:
     required: false
-    description: >-
-      Run GoSec. Possible values (true|false)
+    description: "Run Gosec"
   run-staticcheck:
     required: false
-    description: >-
-      Run StaticCheck. Possible values (true|false)
+    description: "Run Staticcheck"
   clang-tidy-output:
     required: false
-    description: >-
-      Path to a file containing the output of Clang Tidy.
+    description: "Path to a file containing the output of Clang-Tidy."
   faux-pas-output:
     required: false
-    description: >-
-      Path to a file containing the output of Faux Pas.
+    description: "Path to a file containing the output of Faux Pas."
   skip-uncommitted-files-check:
     required: false
-    description: >-
-      Skip validation on uncommitted changes
+    description: "Skip validation of uncommitted changes"
 runs:
   using: "composite"
   steps:
