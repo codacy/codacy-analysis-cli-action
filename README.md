@@ -179,12 +179,19 @@ To use the GitHub Action with Codacy integration:
 
 5.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
 
-## Extra configurations
+## Parameters
 
-The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and supports [the same parameters as the command `analyze`](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration), with the following exceptions:
+The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli). For a list of supported input parameters, see [`action.yml`](./action.yml). To pass input parameters to the action, [update the associated `with` map](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runsstepswith).
 
--   `--commit-uuid` (the action always analyzes the commit that triggered it)
--   `--username` and `--project` (the action automatically uses the owner and name of the repository when you specify the parameter `api-token`)
+The following example limits analysis to a `src` directory and provides additional details by setting `verbose` to `true`.
+
+```yaml
+- name: Run Codacy Analysis CLI
+  uses: codacy/codacy-analysis-cli-action@master
+  with:
+    directory: src
+    verbose: true
+```
 
 ## Contributing
 
