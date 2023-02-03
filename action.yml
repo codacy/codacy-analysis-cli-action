@@ -152,10 +152,8 @@ runs:
             | xargs -L 1 curl -fsSL -o /tmp/staticcheck_linux_amd64.tar.gz
           tar -xvf /tmp/staticcheck_linux_amd64.tar.gz staticcheck/staticcheck
           chmod +x ./staticcheck/staticcheck
-          curl -fsSL https://api.github.com/repos/codacy/codacy-staticcheck/releases/latest \
-            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/codacy-staticcheck
+          CODACY_STATICCHECK_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-staticcheck/latest" -o-)
+          curl -fsSL "https://artifacts.codacy.com/bin/codacy-staticcheck/$CODACY_STATICCHECK_VERSION/codacy-staticcheck-$CODACY_STATICCHECK_VERSION" -o /tmp/codacy-staticcheck
           chmod +x /tmp/codacy-staticcheck
           cd -
 
