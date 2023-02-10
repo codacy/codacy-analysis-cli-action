@@ -177,10 +177,8 @@ runs:
 
         if [ -n "${{ inputs.clang-tidy-output }}" ]; then
           cd /tmp
-          curl -fsSL https://api.github.com/repos/codacy/codacy-clang-tidy/releases/latest \
-            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/codacy-clang-tidy
+          CODACY_CLANG_TIDY_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-clang-tidy/latest" -o-)
+          curl -fsSL "https://artifacts.codacy.com/bin/codacy-clang-tidy/$CODACY_CLANG_TIDY_VERSION/codacy-clang-tidy-linux-$CODACY_CLANG_TIDY_VERSION" -o /tmp/codacy-clang-tidy
           chmod +x /tmp/codacy-clang-tidy
           cd -
 
