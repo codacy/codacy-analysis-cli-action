@@ -97,7 +97,7 @@ jobs:
 
 ## Integration with Codacy for client-side tools
 
-Use the GitHub Action to run any of the [containerized Codacy client-side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
+Use the GitHub Action to run any of the [**containerized** client-side tools supported by Codacy](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
 
 In this scenario, the GitHub action:
 
@@ -109,6 +109,8 @@ After this, Codacy displays the results of the analysis of your commits and pull
 ![Codacy integration](images/codacy-analysis-integration.png)
 
 To use the GitHub Action with Codacy integration:
+
+1.  On Codacy, [enable the containerized client-side tool](../../repositories-configure/configuring-code-patterns.md) and configure the corresponding code patterns on your repository **Code patterns** page.
 
 1.  On Codacy, enable **Run analysis through build server** in your repository **Settings**, tab **General**, **Repository analysis**.
 
