@@ -164,7 +164,7 @@ To use the GitHub Action with Codacy integration:
     run-staticcheck: "true"
     ```
 
-    Due to the complex orchestration of the tools Clang-Tidy and Faux Pas, in this case the action can receive instead the output files of the tools and uploads them to Codacy:
+    Due to the complex orchestration of the tools Clang-Tidy and Faux Pas, in this case the action can receive instead the output files of the tools and upload them to Codacy:
 
     ```yaml
     clang-tidy-output: "path/to/output"
