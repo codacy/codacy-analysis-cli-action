@@ -123,7 +123,7 @@ To use the GitHub Action with Codacy integration:
 
     > ⚠️ **Never write API tokens to your configuration files** and keep your API tokens well protected, as they grant owner permissions to your projects on Codacy.
 
-3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the [**containerized** client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) that the Codacy Analysis CLI will run locally, or don't specify this parameter to run all tools supported by Codacy:
+3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the [containerized client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) that the Codacy Analysis CLI will run locally, or don't specify this parameter to run all tools supported by Codacy:
 
     ```yaml
     name: Codacy Analysis CLI
