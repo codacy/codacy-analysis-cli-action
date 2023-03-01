@@ -97,7 +97,7 @@ jobs:
 
 ## Integration with Codacy for client-side tools
 
-Use the GitHub Action to run any of the [containerized Codacy client-side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
+Use the GitHub Action to run any of the [**containerized** client-side tools supported by Codacy](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
 
 In this scenario, the GitHub action:
 
@@ -110,6 +110,8 @@ After this, Codacy displays the results of the analysis of your commits and pull
 
 To use the GitHub Action with Codacy integration:
 
+1.  On Codacy, [enable the containerized client-side tool](../../repositories-configure/configuring-code-patterns.md) and configure the corresponding code patterns on your repository **Code patterns** page.
+
 1.  On Codacy, enable **Run analysis through build server** in your repository **Settings**, tab **General**, **Repository analysis**.
 
     This setting enables Codacy to wait for the results of the local analysis before resuming the analysis of your commits.
@@ -121,7 +123,7 @@ To use the GitHub Action with Codacy integration:
 
     > ⚠️ **Never write API tokens to your configuration files** and keep your API tokens well protected, as they grant owner permissions to your projects on Codacy.
 
-3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the [**containerized** client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) that the Codacy Analysis CLI will run locally, or don't specify this parameter to run all tools supported by Codacy:
+3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the [containerized client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) that the Codacy Analysis CLI will run locally, or don't specify this parameter to run all tools supported by Codacy:
 
     ```yaml
     name: Codacy Analysis CLI
@@ -164,7 +166,7 @@ To use the GitHub Action with Codacy integration:
     run-staticcheck: "true"
     ```
 
-    Due to the complex orchestration of the tools Clang-Tidy and Faux Pas, in this case the action can receive instead the output files of the tools and uploads them to Codacy:
+    Due to the complex orchestration of the tools Clang-Tidy and Faux Pas, the action can receive instead the output files of the tools and upload them to Codacy:
 
     ```yaml
     clang-tidy-output: "path/to/output"
