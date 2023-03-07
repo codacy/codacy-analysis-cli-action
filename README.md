@@ -2,7 +2,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/946b78614f154f81b1c9c0514fd9f35c)](https://www.codacy.com/gh/codacy/codacy-analysis-cli-action/dashboard?utm_source=github.com&utm_medium=referral&utm_content=codacy/codacy-analysis-cli-action&utm_campaign=Badge_Grade)
 
-GitHub Action for running Codacy static analysis on [over 30 supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) and returning identified issues in the code.
+GitHub Action for running Codacy static analysis on [over 40 supported languages](https://docs.codacy.com/getting-started/supported-languages-and-tools/) and returning identified issues in the code.
 
 <br/>
 
@@ -10,7 +10,7 @@ GitHub Action for running Codacy static analysis on [over 30 supported languages
 
 <br/>
 
-[Codacy](https://www.codacy.com/) is an automated code review tool that makes it easy to ensure your team is writing high-quality code by analyzing more than 30 programming languages such as PHP, JavaScript, Python, Java, and Ruby. Codacy allows you to define your own quality rules, code patterns and quality settings you'd like to enforce to prevent issues on your codebase.
+[Codacy](https://www.codacy.com/) is an automated code review tool that makes it easy to ensure your team is writing high-quality code by analyzing more than 40 programming languages such as PHP, JavaScript, Python, Java, and Ruby. Codacy allows you to define your own quality rules, code patterns and quality settings you'd like to enforce to prevent issues on your codebase.
 
 The Codacy GitHub Action supports the following scenarios:
 
@@ -85,7 +85,7 @@ jobs:
           # Adjust severity of non-security issues
           gh-code-scanning-compat: true
           # Force 0 exit code to allow SARIF file generation
-          # This will handover control about PR rejection to the GitHub side
+          # This will hand over control about PR rejection to the GitHub side
           max-allowed-issues: 2147483647
       
       # Upload the SARIF file generated in the previous step
@@ -97,7 +97,7 @@ jobs:
 
 ## Integration with Codacy for client-side tools
 
-Use the GitHub Action to run any of the [containerized Codacy client-side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
+Use the GitHub Action to run any of the [**containerized** client-side tools supported by Codacy](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) and upload the results of the analysis to Codacy.
 
 In this scenario, the GitHub action:
 
@@ -110,6 +110,8 @@ After this, Codacy displays the results of the analysis of your commits and pull
 
 To use the GitHub Action with Codacy integration:
 
+1.  On Codacy, [enable the containerized client-side tool](../../repositories-configure/configuring-code-patterns.md) and configure the corresponding code patterns on your repository **Code patterns** page.
+
 1.  On Codacy, enable **Run analysis through build server** in your repository **Settings**, tab **General**, **Repository analysis**.
 
     This setting enables Codacy to wait for the results of the local analysis before resuming the analysis of your commits.
@@ -119,9 +121,9 @@ To use the GitHub Action with Codacy integration:
     -   **If you're setting up one repository**, [obtain a project API token](https://docs.codacy.com/codacy-api/api-tokens/#project-api-tokens) and store it as an [encrypted secret for your **repository**](https://docs.github.com/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with the name `CODACY_PROJECT_TOKEN`.
     -   **If you're setting up multiple repositories**, [obtain an account API token](https://docs.codacy.com/codacy-api/api-tokens/#account-api-tokens) and store it as an [encrypted secret for your **organization**](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-an-organization) with the name `CODACY_API_TOKEN`.
 
-    > ⚠️ **Never write API tokens on your configuration files** and keep your API tokens well protected, as they grant owner permissions to your projects on Codacy.
+    > ⚠️ **Never write API tokens to your configuration files** and keep your API tokens well protected, as they grant owner permissions to your projects on Codacy.
 
-3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the [**containerized** client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) that the Codacy Analysis CLI will run locally, or don't specify this parameter to run all tools supported by Codacy:
+3.  Add the following to a file `.github/workflows/codacy-analysis.yaml` in your repository, where `<CLIENT_SIDE_TOOL_NAME>` is the name of the [containerized client-side tool](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/) that the Codacy Analysis CLI will run locally, or don't specify this parameter to run all tools supported by Codacy:
 
     ```yaml
     name: Codacy Analysis CLI
@@ -154,7 +156,7 @@ To use the GitHub Action with Codacy integration:
       uses: actions/setup-go@v3
       with:
         # Go version currently supported by Codacy
-        go-version: 1.17.13
+        go-version: 1.19.1
     ```
 
 4.  Optionally, specify the following parameters to run [**standalone** client-side tools](https://docs.codacy.com/related-tools/local-analysis/client-side-tools/):
@@ -164,7 +166,7 @@ To use the GitHub Action with Codacy integration:
     run-staticcheck: "true"
     ```
 
-    Due to the complex orchestration of the tools Clang-Tidy and Faux Pas, in this case the action can receive instead the output files of the tools and uploads them to Codacy:
+    Due to the complex orchestration of the tools Clang-Tidy and Faux Pas, the action can receive instead the output files of the tools and upload them to Codacy:
 
     ```yaml
     clang-tidy-output: "path/to/output"
@@ -179,12 +181,19 @@ To use the GitHub Action with Codacy integration:
 
 5.  Optionally, [enable the GitHub integration](https://docs.codacy.com/repositories-configure/integrations/github-integration/) on Codacy to have information about the analysis of the changed files directly on your pull requests.
 
-## Extra configurations
+## Parameters
 
-The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli) and supports [the same parameters as the command `analyze`](https://github.com/codacy/codacy-analysis-cli#commands-and-configuration), with the following exceptions:
+The Codacy GitHub Action is a wrapper for running the [Codacy Analysis CLI](https://github.com/codacy/codacy-analysis-cli). For a list of supported input parameters, see [`action.yml`](./action.yml). To pass input parameters to the action, [update the associated `with` map](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runsstepswith).
 
--   `--commit-uuid` (the action always analyzes the commit that triggered it)
--   `--username` and `--project` (the action automatically uses the owner and name of the repository when you specify the parameter `api-token`)
+The following example limits analysis to a `src` directory and provides additional details by setting `verbose` to `true`.
+
+```yaml
+- name: Run Codacy Analysis CLI
+  uses: codacy/codacy-analysis-cli-action@master
+  with:
+    directory: src
+    verbose: true
+```
 
 ## Contributing
 
