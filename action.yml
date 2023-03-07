@@ -119,10 +119,8 @@ runs:
           cd /tmp
           curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.13.1
           chmod +x ./bin/gosec
-          curl -fsSL https://api.github.com/repos/codacy/codacy-gosec/releases/latest \
-            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/codacy-gosec
+          CODACY_GOSEC_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-gosec/latest" -o-)
+          curl -fsSL "https://artifacts.codacy.com/bin/codacy-gosec/$CODACY_GOSEC_VERSION/codacy-gosec-$CODACY_GOSEC_VERSION" -o /tmp/codacy-gosec
           chmod +x /tmp/codacy-gosec
           cd -
 
@@ -201,10 +199,8 @@ runs:
 
         if [ -n "${{ inputs.faux-pas-output }}" ]; then
           cd /tmp
-          curl -fsSL https://api.github.com/repos/codacy/codacy-faux-pas/releases/latest \
-            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/codacy-faux-pas
+          CODACY_FAUX_PAS_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-faux-pas/latest" -o-)
+          curl -fsSL "https://artifacts.codacy.com/bin/codacy-faux-pas/$CODACY_FAUX_PAS_VERSION/codacy-faux-pas-$CODACY_FAUX_PAS_VERSION" -o /tmp/codacy-faux-pas
           chmod +x /tmp/codacy-faux-pas
           cd -
 
