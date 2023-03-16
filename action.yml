@@ -147,7 +147,7 @@ runs:
 
         if [ "${{ inputs.run-staticcheck }}" == "true" ]; then
           cd /tmp
-          go install honnef.co/go/tools/cmd/staticcheck@latest      
+          go install honnef.co/go/tools/cmd/staticcheck@2023.1.2      
           chmod +x /home/runner/go/bin/staticcheck
           CODACY_STATICCHECK_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-staticcheck/latest" -o-)
           curl -fsSL "https://artifacts.codacy.com/bin/codacy-staticcheck/$CODACY_STATICCHECK_VERSION/codacy-staticcheck-$CODACY_STATICCHECK_VERSION" -o /tmp/codacy-staticcheck
