@@ -102,6 +102,7 @@ runs:
         echo "COMMIT_SHA=$(if [ ${{ github.event_name }} == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${{ github.sha }}"; fi)" >> $GITHUB_ENV
         if [ -n "${{ inputs.skip-container-engine-check }}" ]; then
           echo "SKIP_CONTAINER_ENGINE_CHECK=${{ inputs.skip-container-engine-check }}" >> $GITHUB_ENV
+        fi
 
     - name: "Prepare curl authentication header"
       shell: bash
