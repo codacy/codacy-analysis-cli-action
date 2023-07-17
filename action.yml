@@ -101,7 +101,7 @@ runs:
         echo "ORGANIZATION_PROVIDER=$(if [ "$GITHUB_SERVER_URL" == "https://github.com" ]; then echo "gh"; else echo "ghe"; fi)" >> "$GITHUB_ENV"
         echo "COMMIT_SHA=$(if [ "${{ github.event_name }}" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${{ github.sha }}"; fi)" >> "$GITHUB_ENV"
         if [ -n "${{ inputs.skip-container-engine-check }}" ]; then
-          echo "SKIP_CONTAINER_ENGINE_CHECK=${{ inputs.skip-container-engine-check }}" >> $GITHUB_ENV
+          echo "SKIP_CONTAINER_ENGINE_CHECK=${{ inputs.skip-container-engine-check }}" >> "$GITHUB_ENV"
         fi
 
     - name: "Prepare curl authentication header"
