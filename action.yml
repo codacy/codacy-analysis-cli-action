@@ -17,68 +17,78 @@ inputs:
     description: "API account token to retrieve your remote Codacy configuration for the project being analyzed"
   codacy-api-base-url:
     required: false
-    description: "Codacy's API URL, to retrieve your remote Codacy configuration"
+    description: "Codacy API URL to retrieve your remote Codacy configuration"
   format:
     required: false
-    description: "Format of the output file"
+    description: "Output file format"
   output:
     required: false
-    description: "Send analysis results to an output file"
+    description: "Path to a file to save the analysis results"
   directory:
     required: false
-    description: "The directory to be analyzed"
+    description: "Directory to analyze"
   parallel:
     required: false
     description: "Number of tools to run in parallel"
+  max-tool-memory:
+    required: false
+    description: "Maximum allowed memory for running each tool (bytes)"
   max-allowed-issues:
     required: false
     default: "2147483647"
     description: "Maximum number of issues allowed for the analysis to succeed"
   tool:
     required: false
-    description: "The name of the tool to analyze the code"
+    description: >-
+      Only run a specific tool or tool category (metrics, issues, duplication).
+      For the full list of tools, see https://docs.codacy.com/repositories-configure/codacy-configuration-file/#which-tools-can-be-configured-and-which-name-should-i-use
   tool-timeout:
     required: false
-    description: "Maximum time each tool has to execute"
+    description: "Tool execution timeout (e.g. 15minutes, 1hour)"
   upload:
     required: false
     description: "Upload analysis results to Codacy"
+  upload-batch-size:
+    required: false
+    description: "Maximum number of results in each batch to upload to Codacy"
   fail-if-incomplete:
     required: false
     description: "Fail the analysis if any tool fails to run"
   allow-network:
     required: false
-    description: "Allow network access for tools"
+    description: "Allow the tools to access the network"
   force-file-permissions:
     required: false
     description: "Force files to be readable by changing the permissions before running the analysis"
   gh-code-scanning-compat:
     required: false
     description: >-
-      Reduce issue severity by one level, for non-security issues, for compatibility with GitHub's code scanning feature.
-      This option will only have an effect when used in conjunction with '--format sarif'.
+      Reduce issue severity by one level for non-security issues, for compatibility with GitHub's code scanning feature.
+      This option only has an effect when used with 'format: sarif'.
   run-docker-tools:
     required: false
     default: "true"
     description: >-
-      Run dockerized tools. Possible values (true|false)
-      Check the full list in https://docs.codacy.com/repositories-configure/codacy-configuration-file/#which-tools-can-be-configured-and-which-name-should-i-use
+      Run all dockerized tools supported by Codacy.
+      For the full list of tools, see https://docs.codacy.com/repositories-configure/codacy-configuration-file/#which-tools-can-be-configured-and-which-name-should-i-use
   run-gosec:
     required: false
-    description: >-
-      Run GoSec. Possible values (true|false)
+    description: "Run Gosec"
   run-staticcheck:
     required: false
-    description: >-
-      Run StaticCheck. Possible values (true|false)
+    description: "Run Staticcheck"
   clang-tidy-output:
     required: false
-    description: >-
-      Path to a file containing the output of Clang Tidy.
+    description: "Path to a file containing the output of Clang-Tidy."
   faux-pas-output:
     required: false
-    description: >-
-      Path to a file containing the output of Faux Pas.
+    description: "Path to a file containing the output of Faux Pas."
+  skip-uncommitted-files-check:
+    required: false
+    description: "Skip validation of uncommitted changes"
+  skip-container-engine-check:
+    required: false
+    description: "Skip check for the presence of a known container engine before executing"
 runs:
   using: "composite"
   steps:
@@ -90,6 +100,9 @@ runs:
         echo "REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | cut -d '/' -f 2)" >> "$GITHUB_ENV"
         echo "ORGANIZATION_PROVIDER=$(if [ "$GITHUB_SERVER_URL" == "https://github.com" ]; then echo "gh"; else echo "ghe"; fi)" >> "$GITHUB_ENV"
         echo "COMMIT_SHA=$(if [ "${{ github.event_name }}" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${{ github.sha }}"; fi)" >> "$GITHUB_ENV"
+        if [ -n "${{ inputs.skip-container-engine-check }}" ]; then
+          echo "SKIP_CONTAINER_ENGINE_CHECK=${{ inputs.skip-container-engine-check }}" >> $GITHUB_ENV
+        fi
 
     - name: "Prepare curl authentication header"
       shell: bash
@@ -110,12 +123,10 @@ runs:
 
         if [ "${{ inputs.run-gosec }}" == "true" ]; then
           cd /tmp
-          curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.7.0
+          curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.13.1
           chmod +x ./bin/gosec
-          curl -fsSL https://api.github.com/repos/codacy/codacy-gosec/releases/latest \
-            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/codacy-gosec
+          CODACY_GOSEC_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-gosec/latest" -o-)
+          curl -fsSL "https://artifacts.codacy.com/bin/codacy-gosec/$CODACY_GOSEC_VERSION/codacy-gosec-$CODACY_GOSEC_VERSION" -o /tmp/codacy-gosec
           chmod +x /tmp/codacy-gosec
           cd -
 
@@ -131,7 +142,10 @@ runs:
         else
           echo "Skipping GoSec"
         fi
-
+    - name: set-up go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.20.2
     - name: "Run StaticCheck"
       shell: bash
       run: |
@@ -139,20 +153,14 @@ runs:
 
         if [ "${{ inputs.run-staticcheck }}" == "true" ]; then
           cd /tmp
-          curl -fsSL https://api.github.com/repos/dominikh/go-tools/releases/latest \
-            | grep -E "browser_download_url.*staticcheck_linux_amd64.tar.gz\"$" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/staticcheck_linux_amd64.tar.gz
-          tar -xvf /tmp/staticcheck_linux_amd64.tar.gz staticcheck/staticcheck
-          chmod +x ./staticcheck/staticcheck
-          curl -fsSL https://api.github.com/repos/codacy/codacy-staticcheck/releases/latest \
-            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/codacy-staticcheck
+          go install honnef.co/go/tools/cmd/staticcheck@2023.1.2      
+          chmod +x /home/runner/go/bin/staticcheck
+          CODACY_STATICCHECK_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-staticcheck/latest" -o-)
+          curl -fsSL "https://artifacts.codacy.com/bin/codacy-staticcheck/$CODACY_STATICCHECK_VERSION/codacy-staticcheck-$CODACY_STATICCHECK_VERSION" -o /tmp/codacy-staticcheck
           chmod +x /tmp/codacy-staticcheck
           cd -
 
-          find . -type f -name go.mod -exec bash -c 'cd $(dirname $1); cp $1 $1.codacy.bak; PKGS=$(go list ./...); /tmp/staticcheck/staticcheck -f json $PKGS; mv $1.codacy.bak $1' _ {} \; > /tmp/staticcheck-out.json
+          find . -type f -name go.mod -exec bash -c 'cd $(dirname $1); cp $1 $1.codacy.bak; PKGS=$(go list ./...); /home/runner/go/bin/staticcheck -f json $PKGS; mv $1.codacy.bak $1' _ {} \; > /tmp/staticcheck-out.json
           /tmp/codacy-staticcheck < /tmp/staticcheck-out.json > /tmp/codacy-out.json
           if [ "${{ inputs.upload }}" == "true" ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
@@ -172,10 +180,8 @@ runs:
 
         if [ -n "${{ inputs.clang-tidy-output }}" ]; then
           cd /tmp
-          curl -fsSL https://api.github.com/repos/codacy/codacy-clang-tidy/releases/latest \
-            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/codacy-clang-tidy
+          CODACY_CLANG_TIDY_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-clang-tidy/latest" -o-)
+          curl -fsSL "https://artifacts.codacy.com/bin/codacy-clang-tidy/$CODACY_CLANG_TIDY_VERSION/codacy-clang-tidy-linux-$CODACY_CLANG_TIDY_VERSION" -o /tmp/codacy-clang-tidy
           chmod +x /tmp/codacy-clang-tidy
           cd -
 
@@ -198,10 +204,8 @@ runs:
 
         if [ -n "${{ inputs.faux-pas-output }}" ]; then
           cd /tmp
-          curl -fsSL https://api.github.com/repos/codacy/codacy-faux-pas/releases/latest \
-            | grep "browser_download_url" | grep -v "browser_download_url.*jar" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/codacy-faux-pas
+          CODACY_FAUX_PAS_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-faux-pas/latest" -o-)
+          curl -fsSL "https://artifacts.codacy.com/bin/codacy-faux-pas/$CODACY_FAUX_PAS_VERSION/codacy-faux-pas-$CODACY_FAUX_PAS_VERSION" -o /tmp/codacy-faux-pas
           chmod +x /tmp/codacy-faux-pas
           cd -
 
@@ -219,7 +223,7 @@ runs:
 
     - name: "Set Codacy CLI version"
       shell: bash
-      run: echo "CODACY_ANALYSIS_CLI_VERSION=7.0.5" >> $GITHUB_ENV
+      run: echo "CODACY_ANALYSIS_CLI_VERSION=7.9.1" >> $GITHUB_ENV
     - name: "Set script path environment variable"
       shell: bash
       run: echo "CLI_SCRIPT_PATH=${{ github.action_path }}/codacy-analysis-cli.sh" >> $GITHUB_ENV
@@ -245,10 +249,13 @@ runs:
             $(if [ -n "${{ inputs.output }}" ]; then echo "--output ${{ inputs.output }}"; fi) \
             $(if [ -n "${{ inputs.directory }}" ]; then echo "--directory ${{ inputs.directory }}"; fi) \
             $(if [ -n "${{ inputs.parallel }}" ]; then echo "--parallel ${{ inputs.parallel }}"; fi) \
+            $(if [ -n "${{ inputs.max-tool-memory }}" ]; then echo "--max-tool-memory ${{ inputs.max-tool-memory }}"; fi) \
             $(if [ -n "${{ inputs.max-allowed-issues }}" ]; then echo "--max-allowed-issues ${{ inputs.max-allowed-issues }}"; fi) \
             $(if [ -n "${{ inputs.tool }}" ]; then echo "--tool ${{ inputs.tool }}"; fi) \
             $(if [ -n "${{ inputs.tool-timeout }}" ]; then echo "--tool-timeout ${{ inputs.tool-timeout }}"; fi) \
+            $(if [ "${{ inputs.skip-uncommitted-files-check }}" == "true" ]; then echo "--skip-uncommitted-files-check"; fi) \
             $(if [ "${{ inputs.upload }}" == "true" ]; then echo "--upload"; fi) \
+            $(if [ -n "${{ inputs.upload-batch-size }}" ]; then echo "--upload-batch-size ${{ inputs.upload-batch-size }}"; fi) \
             $(if [ "${{ inputs.fail-if-incomplete }}" == "true" ]; then echo "--fail-if-incomplete"; fi) \
             $(if [ "${{ inputs.allow-network }}" == "true" ]; then echo "--allow-network"; fi) \
             $(if [ "${{ inputs.force-file-permissions }}" == "true" ]; then echo "--force-file-permissions"; fi) \
