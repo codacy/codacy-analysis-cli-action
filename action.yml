@@ -86,17 +86,23 @@ inputs:
   skip-uncommitted-files-check:
     required: false
     description: "Skip validation of uncommitted changes"
+  skip-container-engine-check:
+    required: false
+    description: "Skip check for the presence of a known container engine before executing"
 runs:
   using: "composite"
   steps:
     - name: "Set Global Variables"
       shell: bash
       run: |
-        echo "CODACY_BASE_URL_OR_DEFAULT=$(if [ ${{ inputs.codacy-api-base-url }} ]; then echo "${{ inputs.codacy-api-base-url }}"; else echo "https://api.codacy.com"; fi)" >> $GITHUB_ENV
-        echo "OWNER_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)" >> $GITHUB_ENV
-        echo "REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)" >> $GITHUB_ENV
-        echo "ORGANIZATION_PROVIDER=$(if [ "$GITHUB_SERVER_URL" == "https://github.com" ]; then echo "gh"; else echo "ghe"; fi)" >> $GITHUB_ENV
-        echo "COMMIT_SHA=$(if [ ${{ github.event_name }} == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${{ github.sha }}"; fi)" >> $GITHUB_ENV
+        echo "CODACY_BASE_URL_OR_DEFAULT=$(if [ -n "${{ inputs.codacy-api-base-url }}" ]; then echo "${{ inputs.codacy-api-base-url }}"; else echo "https://api.codacy.com"; fi)" >> "$GITHUB_ENV"
+        echo "OWNER_NAME=$(echo "$GITHUB_REPOSITORY" | cut -d '/' -f 1)" >> "$GITHUB_ENV"
+        echo "REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | cut -d '/' -f 2)" >> "$GITHUB_ENV"
+        echo "ORGANIZATION_PROVIDER=$(if [ "$GITHUB_SERVER_URL" == "https://github.com" ]; then echo "gh"; else echo "ghe"; fi)" >> "$GITHUB_ENV"
+        echo "COMMIT_SHA=$(if [ "${{ github.event_name }}" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${{ github.sha }}"; fi)" >> "$GITHUB_ENV"
+        if [ -n "${{ inputs.skip-container-engine-check }}" ]; then
+          echo "SKIP_CONTAINER_ENGINE_CHECK=${{ inputs.skip-container-engine-check }}" >> "$GITHUB_ENV"
+        fi
 
     - name: "Prepare curl authentication header"
       shell: bash
@@ -105,7 +111,7 @@ runs:
           echo "CURL_CODACY_AUTH_AUTHENTICATION=api-token: ${{ inputs.api-token }}" >> $GITHUB_ENV
         elif [ -n "${{ inputs.project-token }}" ]; then
           echo "CURL_CODACY_AUTH_AUTHENTICATION=project-token: ${{ inputs.project-token }}" >> $GITHUB_ENV
-        elif [ ${{ inputs.upload }} = true ]; then
+        elif [ "${{ inputs.upload }}" == "true" ]; then
           echo "At least one authentication method is required to upload results."
           exit 1
         fi
@@ -117,7 +123,7 @@ runs:
 
         if [ "${{ inputs.run-gosec }}" == "true" ]; then
           cd /tmp
-          curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.13.1
+          curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.15.0
           chmod +x ./bin/gosec
           CODACY_GOSEC_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-gosec/latest" -o-)
           curl -fsSL "https://artifacts.codacy.com/bin/codacy-gosec/$CODACY_GOSEC_VERSION/codacy-gosec-$CODACY_GOSEC_VERSION" -o /tmp/codacy-gosec
@@ -126,7 +132,7 @@ runs:
 
           /tmp/bin/gosec -no-fail -fmt json -log /tmp/log.txt ./... > /tmp/gosec-out.json
           /tmp/codacy-gosec < /tmp/gosec-out.json > /tmp/codacy-out.json
-          if [ ${{ inputs.upload }} = true ]; then
+          if [ "${{ inputs.upload }}" == "true" ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
               "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/issuesRemoteResults"
@@ -136,7 +142,10 @@ runs:
         else
           echo "Skipping GoSec"
         fi
-
+    - name: set-up go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.20.2
     - name: "Run StaticCheck"
       shell: bash
       run: |
@@ -144,20 +153,16 @@ runs:
 
         if [ "${{ inputs.run-staticcheck }}" == "true" ]; then
           cd /tmp
-          curl -fsSL https://api.github.com/repos/dominikh/go-tools/releases/latest \
-            | grep -E "browser_download_url.*staticcheck_linux_amd64.tar.gz\"$" \
-            | cut -d '"' -f 4 \
-            | xargs -L 1 curl -fsSL -o /tmp/staticcheck_linux_amd64.tar.gz
-          tar -xvf /tmp/staticcheck_linux_amd64.tar.gz staticcheck/staticcheck
-          chmod +x ./staticcheck/staticcheck
+          go install honnef.co/go/tools/cmd/staticcheck@2023.1.6      
+          chmod +x /home/runner/go/bin/staticcheck
           CODACY_STATICCHECK_VERSION=$(curl -SL "https://artifacts.codacy.com/bin/codacy-staticcheck/latest" -o-)
           curl -fsSL "https://artifacts.codacy.com/bin/codacy-staticcheck/$CODACY_STATICCHECK_VERSION/codacy-staticcheck-$CODACY_STATICCHECK_VERSION" -o /tmp/codacy-staticcheck
           chmod +x /tmp/codacy-staticcheck
           cd -
 
-          find . -type f -name go.mod -exec bash -c 'cd $(dirname $1); cp $1 $1.codacy.bak; PKGS=$(go list ./...); /tmp/staticcheck/staticcheck -f json $PKGS; mv $1.codacy.bak $1' _ {} \; > /tmp/staticcheck-out.json
+          find . -type f -name go.mod -exec bash -c 'cd $(dirname $1); cp $1 $1.codacy.bak; PKGS=$(go list ./...); /home/runner/go/bin/staticcheck -f json $PKGS; mv $1.codacy.bak $1' _ {} \; > /tmp/staticcheck-out.json
           /tmp/codacy-staticcheck < /tmp/staticcheck-out.json > /tmp/codacy-out.json
-          if [ ${{ inputs.upload }} = true ]; then
+          if [ "${{ inputs.upload }}" == "true" ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
               "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/issuesRemoteResults"
@@ -181,7 +186,7 @@ runs:
           cd -
 
           /tmp/codacy-clang-tidy < "${{ inputs.clang-tidy-output }}" > /tmp/codacy-out.json
-          if [ ${{ inputs.upload }} = true ]; then
+          if [ "${{ inputs.upload }}" == "true" ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
               "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/issuesRemoteResults"
@@ -205,7 +210,7 @@ runs:
           cd -
 
           /tmp/codacy-faux-pas < "${{ inputs.faux-pas-output }}" > /tmp/codacy-out.json
-          if [ ${{ inputs.upload }} = true ]; then
+          if [ "${{ inputs.upload }}" == "true" ]; then
             curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
               -H "Content-type: application/json" --data-binary @/tmp/codacy-out.json \
               "${CODACY_BASE_URL_OR_DEFAULT}/2.0/$ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME/commit/$COMMIT_SHA/issuesRemoteResults"
@@ -218,7 +223,7 @@ runs:
 
     - name: "Set Codacy CLI version"
       shell: bash
-      run: echo "CODACY_ANALYSIS_CLI_VERSION=7.6.4" >> $GITHUB_ENV
+      run: echo "CODACY_ANALYSIS_CLI_VERSION=7.9.7" >> $GITHUB_ENV
     - name: "Set script path environment variable"
       shell: bash
       run: echo "CLI_SCRIPT_PATH=${{ github.action_path }}/codacy-analysis-cli.sh" >> $GITHUB_ENV
@@ -227,7 +232,7 @@ runs:
       run: wget -O - https://raw.githubusercontent.com/codacy/codacy-analysis-cli/${{ env.CODACY_ANALYSIS_CLI_VERSION }}/bin/codacy-analysis-cli.sh > ${{ env.CLI_SCRIPT_PATH }}
     - name: "Change Codacy CLI script permissions"
       shell: bash
-      run: chmod +x ${{ env.CLI_SCRIPT_PATH }}
+      run: chmod +x "${{ env.CLI_SCRIPT_PATH }}"
     - name: "Run Codacy CLI"
       shell: bash
       run: |
@@ -236,7 +241,7 @@ runs:
             analyze \
             --skip-commit-uuid-validation \
             --commit-uuid $COMMIT_SHA \
-            $(if [ "${{ inputs.verbose }}" = "true" ]; then echo "--verbose"; fi) \
+            $(if [ "${{ inputs.verbose }}" == "true" ]; then echo "--verbose"; fi) \
             $(if [ -n "${{ inputs.project-token }}" ]; then echo "--project-token ${{ inputs.project-token }}"; fi) \
             $(if [ -n "${{ inputs.api-token }}" ]; then echo "--api-token ${{ inputs.api-token }} --username $OWNER_NAME --project $REPOSITORY_NAME --provider $ORGANIZATION_PROVIDER"; fi) \
             $(if [ -n "${{ inputs.codacy-api-base-url }}" ]; then echo "--codacy-api-base-url ${{ inputs.codacy-api-base-url }}"; fi) \
@@ -248,13 +253,13 @@ runs:
             $(if [ -n "${{ inputs.max-allowed-issues }}" ]; then echo "--max-allowed-issues ${{ inputs.max-allowed-issues }}"; fi) \
             $(if [ -n "${{ inputs.tool }}" ]; then echo "--tool ${{ inputs.tool }}"; fi) \
             $(if [ -n "${{ inputs.tool-timeout }}" ]; then echo "--tool-timeout ${{ inputs.tool-timeout }}"; fi) \
-            $(if [ "${{ inputs.skip-uncommitted-files-check }}" = "true" ]; then echo "--skip-uncommitted-files-check"; fi) \
-            $(if [ "${{ inputs.upload }}" = "true" ]; then echo "--upload"; fi) \
+            $(if [ "${{ inputs.skip-uncommitted-files-check }}" == "true" ]; then echo "--skip-uncommitted-files-check"; fi) \
+            $(if [ "${{ inputs.upload }}" == "true" ]; then echo "--upload"; fi) \
             $(if [ -n "${{ inputs.upload-batch-size }}" ]; then echo "--upload-batch-size ${{ inputs.upload-batch-size }}"; fi) \
-            $(if [ "${{ inputs.fail-if-incomplete }}" = "true" ]; then echo "--fail-if-incomplete"; fi) \
-            $(if [ "${{ inputs.allow-network }}" = "true" ]; then echo "--allow-network"; fi) \
-            $(if [ "${{ inputs.force-file-permissions }}" = "true" ]; then echo "--force-file-permissions"; fi) \
-            $(if [ "${{ inputs.gh-code-scanning-compat }}" = "true" ]; then echo "--gh-code-scanning-compat"; fi)
+            $(if [ "${{ inputs.fail-if-incomplete }}" == "true" ]; then echo "--fail-if-incomplete"; fi) \
+            $(if [ "${{ inputs.allow-network }}" == "true" ]; then echo "--allow-network"; fi) \
+            $(if [ "${{ inputs.force-file-permissions }}" == "true" ]; then echo "--force-file-permissions"; fi) \
+            $(if [ "${{ inputs.gh-code-scanning-compat }}" == "true" ]; then echo "--gh-code-scanning-compat"; fi)
         else
           echo "Skipping docker tools"
         fi
@@ -262,7 +267,7 @@ runs:
     - name: "Let Codacy know it can start processing the analysis results"
       shell: bash
       run: |
-        if [ ${{ inputs.upload }} = true ]; then
+        if [ "${{ inputs.upload }}" == "true" ]; then
           echo "Uploading results for $ORGANIZATION_PROVIDER/$OWNER_NAME/$REPOSITORY_NAME commit $COMMIT_SHA"
           curl -XPOST -L -H "$CURL_CODACY_AUTH_AUTHENTICATION" \
             -H "Content-type: application/json" \
