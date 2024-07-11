@@ -39,7 +39,7 @@ inputs:
     description: "Maximum number of issues allowed for the analysis to succeed"
   registry-address:
     required: false
-    default: "gh"
+    default: ""
     description: "Alternative registry address (e.g. artprod.mycompany/)"
   tool:
     required: false
@@ -241,6 +241,9 @@ runs:
     - name: "Run Codacy CLI"
       shell: bash
       run: |
+        if [ -n "${{ inputs.registry-address }}" ]; then
+          echo "REGISTRY_ADDRESS=${{ inputs.registry-address }}" >> $GITHUB_ENV
+        fi
         if [ "${{ inputs.run-docker-tools }}" == "true" ]; then
           ${{ env.CLI_SCRIPT_PATH }} \
             analyze \
