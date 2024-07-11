@@ -242,7 +242,7 @@ runs:
       shell: bash
       run: |
         if [ -n "${{ inputs.registry-address }}" ]; then
-          echo "REGISTRY_ADDRESS=${{ inputs.registry-address }}" >> $GITHUB_ENV
+          export REGISTRY_ADDRESS=${{ inputs.registry-address }}
         fi
         if [ "${{ inputs.run-docker-tools }}" == "true" ]; then
           ${{ env.CLI_SCRIPT_PATH }} \
